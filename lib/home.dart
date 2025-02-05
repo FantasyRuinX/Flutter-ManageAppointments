@@ -11,8 +11,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +26,11 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
 
             TableCalendar(
-                focusedDay: DateTime.now(),
-                firstDay: DateTime.utc(2001,1,1),
-                lastDay: DateTime.utc(2050,1,1))
+              focusedDay: DateTime.now(),
+              firstDay: DateTime.utc(2001,1,1),
+              lastDay: DateTime.utc(2050,1,1),
+
+            )
 
           ],),),
     );
