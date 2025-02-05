@@ -30,9 +30,8 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      body: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
 
             TableCalendar(
@@ -56,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
             )
 
-          ],),),
+          ],),
     );
   }
 }
