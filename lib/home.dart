@@ -12,6 +12,15 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
+  DateTime? _selectedDate;
+  DateTime _focusedDate = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+    _focusedDate = DateTime.now();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,9 +35,23 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
 
             TableCalendar(
-              focusedDay: DateTime.now(),
+              focusedDay: _focusedDate,
               firstDay: DateTime.utc(2001,1,1),
               lastDay: DateTime.utc(2050,1,1),
+
+              //Show selected date
+              selectedDayPredicate: (day) {
+                return isSameDay(_selectedDate, day);
+              },
+
+              onDaySelected: (selectedDay,focusedDay){
+                if (!isSameDay(_selectedDate, selectedDay)) {
+                  setState(() {
+                    _selectedDate = selectedDay;
+                    _focusedDate = focusedDay;
+                  });
+                }},
+              //----------------
 
             )
 
