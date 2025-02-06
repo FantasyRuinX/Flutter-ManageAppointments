@@ -14,12 +14,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   DateTime? _selectedDate;
   DateTime _focusedDate = DateTime.now();
+  int _selectedItem = 0;
 
 
   @override
   void initState() {
     super.initState();
     _focusedDate = DateTime.now();
+  }
+
+  void setCurrentItem(int index){
+  setState(() {
+    _selectedItem = index;
+  });
   }
 
   @override
@@ -60,7 +67,12 @@ class _MyHomePageState extends State<MyHomePage> {
         BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add"),
         BottomNavigationBarItem(icon: Icon(Icons.change_circle), label: "Change"),
         BottomNavigationBarItem(icon: Icon(Icons.remove), label: "Remove"),
-      ]),
+      ],
+      currentIndex: _selectedItem,
+      onTap: setCurrentItem,
+      selectedItemColor: Colors.indigo[900],
+      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      ),
     );
   }
 }
