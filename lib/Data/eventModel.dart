@@ -1,12 +1,25 @@
-import 'package:flutter/material.dart';
+
+class Event{
+
+  final String description;
+  final double rand;
+
+  Event({
+    required this.description,
+    required this.rand
+});
+
+}
 
 class Events{
 
   final DateTime date;
-  final List<String> events;
+  final String client;
+  final List<Event> events;
 
   Events({
     required this.date,
+    required this.client,
     required this.events
   });
 
