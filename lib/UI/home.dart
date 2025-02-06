@@ -34,28 +34,33 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
 
-            TableCalendar(
-              focusedDay: _focusedDate,
-              firstDay: DateTime.utc(2001,1,1),
-              lastDay: DateTime.utc(2050,1,1),
+          TableCalendar(
+            focusedDay: _focusedDate,
+            firstDay: DateTime.utc(2001,1,1),
+            lastDay: DateTime.utc(2050,1,1),
 
-              //Show selected date
-              selectedDayPredicate: (day) => isSameDay(_selectedDate, day),
+            //Show selected date
+            selectedDayPredicate: (day) => isSameDay(_selectedDate, day),
 
-              onDaySelected: (selectedDay,focusedDay){
-                if (!isSameDay(_selectedDate, selectedDay)) {
-                  setState(() {
-                    _selectedDate = selectedDay;
-                    _focusedDate = focusedDay;
-                  });
-                }},
-              //----------------
+            onDaySelected: (selectedDay,focusedDay){
+              if (!isSameDay(_selectedDate, selectedDay)) {
+                setState(() {
+                  _selectedDate = selectedDay;
+                  _focusedDate = focusedDay;
+                });
+              }},
+            //----------------
 
-              eventLoader: (day) => [1,2],
+            eventLoader: (day) => [1,2],
 
-            )
+          ),
 
           ],),
+      bottomNavigationBar: BottomNavigationBar(items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add"),
+        BottomNavigationBarItem(icon: Icon(Icons.change_circle), label: "Change"),
+        BottomNavigationBarItem(icon: Icon(Icons.remove), label: "Remove"),
+      ]),
     );
   }
 }
