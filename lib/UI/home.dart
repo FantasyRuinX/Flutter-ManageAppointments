@@ -24,9 +24,24 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void setCurrentItem(int index){
+  //Show Dialog variables
+  String title = "";
+
   setState(() {
-    _selectedItem = index;
+  _selectedItem = index;
+
+  switch(_selectedItem){
+    case 0 : title = "Add Client";break;
+    case 1 : title = "Change Client";break;
+    case 2 : title = "Remove Client";break;
+  }
   });
+
+  showDialog(context: context, builder: (builder)
+  {
+    return AlertDialog(title: Text(title));
+  });
+
   }
 
   @override
@@ -72,6 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
       onTap: setCurrentItem,
       selectedItemColor: Colors.indigo[900],
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      iconSize: 30,
       ),
     );
   }
