@@ -4,7 +4,7 @@ import 'package:path/path.dart';
 class ClientDatabase{
 
   static Database? db;
-  late final String dbName;
+  late final String dbNameClient;
 
   static final ClientDatabase instance = ClientDatabase._constructor();
   ClientDatabase._constructor();
@@ -15,15 +15,16 @@ class ClientDatabase{
     return db!;
   }
 
-  void setName(String name){dbName = name;}
+  void setName(String name){dbNameClient = name;}
 
   Future<Database> initDatabase() async{
     
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath,'$dbName.db');
+    final path = join(dbPath,'$dbNameClient.db');
     
     final dbTemp = await openDatabase(path,version : 1,
-        onCreate: (db,version){db.execute(
+        onCreate: (db,version) async {
+      db.execute(
         '''
         CREATE TABLE client(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
