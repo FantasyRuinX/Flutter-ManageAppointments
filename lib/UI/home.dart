@@ -32,8 +32,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   switch(_selectedItem){
     case 0 : title = "Add Client";break;
-    case 1 : title = "Change Client";break;
-    case 2 : title = "Remove Client";break;
+    case 1 : title = "Client List";break;
+    case 2 : title = "Change Client";break;
+    case 3 : title = "Remove Client";break;
   }
   });
 
@@ -73,18 +74,20 @@ class _MyHomePageState extends State<MyHomePage> {
               }},
             //----------------
 
-            eventLoader: (day) => [1,2],
+            eventLoader: (day) => [1,2].isNotEmpty ? [1] : [],
 
           ),
 
           ],),
       bottomNavigationBar: BottomNavigationBar(items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add"),
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: "Clients"),
         BottomNavigationBarItem(icon: Icon(Icons.change_circle), label: "Change"),
         BottomNavigationBarItem(icon: Icon(Icons.remove), label: "Remove"),
       ],
       currentIndex: _selectedItem,
       onTap: setCurrentItem,
+      type: BottomNavigationBarType.fixed,//Show all 4 icons because more than 3 makes it invisible
       selectedItemColor: Colors.indigo[900],
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       iconSize: 30,
