@@ -1,31 +1,38 @@
 
-class Event{
-
-  final String description;
-  final double rand;
-
-  Event({
-    required this.description,
-    required this.rand
-});
-
-}
-
 class Events{
 
-  final DateTime date;
   final String client;
-  final List<Event> events;
+  final List<String> date;
+  final List<String> rand;
+  final List<String> info;
 
   Events({
-    required this.date,
     required this.client,
-    required this.events
+    required this.date,
+    required this.rand,
+    required this.info
   });
+
+  Events.fromJson(Map<String, dynamic> jsonMap) : this(
+    client : (jsonMap['client'] as String),
+    date : List<String>.from(jsonMap['started'] as List),
+    rand : List<String>.from(jsonMap['rand'] as List),
+    info : List<String>.from(jsonMap['info'] as List)
+  );
+
+  Map<String, Object?> toJson() {
+    return {
+      'client': client.toString(),
+      'date': date.toString(),
+      'rand': rand.toString(),
+      'info': info.toString(),
+    };
+  }
+
 
   @override
   String toString() {
-    return "$date : ${events.length} events";
+    return "$date : ${info.length} events";
   }
 
   @override
