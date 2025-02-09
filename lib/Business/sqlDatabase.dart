@@ -1,6 +1,8 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
+import 'package:Flutter_ManageAppointments/Data/eventModel.dart';
+
 class ClientDatabase{
 
   static Database? db;
@@ -52,6 +54,10 @@ class ClientDatabase{
     );
     
     return dbTemp;
+  }
+
+  Future<void> writeData({required Events data}) async{
+    final tempDB = await database;
   }
 
   Future<void> clearDatabase() async {

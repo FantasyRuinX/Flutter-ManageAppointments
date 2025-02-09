@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'UI/home.dart';
+import 'package:provider/provider.dart';
+import 'package:Flutter_ManageAppointments/Data/eventViewModel.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(providers: [
+      ChangeNotifierProvider(create: (_) => EventViewModel())],
+      child: const MyApp(),
+    ));
 }
 
 class MyApp extends StatelessWidget {
