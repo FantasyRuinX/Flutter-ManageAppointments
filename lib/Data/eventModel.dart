@@ -38,7 +38,11 @@ class Events{
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is Events && other.date == date && other.events == events;
+    return other is Events &&
+        other.client == client &&
+        other.date == date &&
+        other.rand == rand &&
+        other.info == info;
   }
 
   @override
