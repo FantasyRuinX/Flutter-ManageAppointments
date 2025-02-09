@@ -54,4 +54,9 @@ class ClientDatabase{
     return dbTemp;
   }
 
+  Future<void> clearDatabase() async {
+    final tempDB = await database;
+    tempDB.delete('client');
+  }
+
 }

@@ -77,7 +77,9 @@ class _MyHomePageState extends State<MyHomePage> {
             eventLoader: (day) => [1,2].isNotEmpty ? [1] : [],
 
           ),
-            Expanded(child: clientList(context)),
+          const SizedBox(height: 10),
+          Expanded(child: clientList(context)),
+          const SizedBox(height: 10),
 
           ],),
       bottomNavigationBar: BottomNavigationBar(items: const <BottomNavigationBarItem>[
@@ -99,15 +101,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 Widget clientList(BuildContext context){
-  final List<String> clients = <String>['a','b','c'];
+  final List<String> clients = <String>['a','b','c','a','b','c','a','b','c','a','b','c','a','b','c','a','b','c'];
+  //['a','b','c'];
   return ListView.builder(
     padding: const EdgeInsets.all(8),
     itemCount: clients.length,
+
     itemBuilder: (BuildContext context, int index){
       return Container(
         height: 50,
-        color : Colors.white,
-         child: Text(clients[index]),
+        color : Colors.grey,
+        child: Text(clients[index]),
       );
     },);
 }
