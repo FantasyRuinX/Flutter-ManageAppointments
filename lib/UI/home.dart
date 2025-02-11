@@ -44,7 +44,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   showDialog(context: context, builder: (builder)
   {
-    return AlertDialog(title: Text(title));
+    return AlertDialog(title: Text(title),
+      content: const Text('Press me!'),
+    actions: <Widget>[
+      Center(
+      child : FloatingActionButton(
+        onPressed: (){Navigator.of(context).pop();},child: const Text('Confirm'),)
+      )]);
   });
 
   }
