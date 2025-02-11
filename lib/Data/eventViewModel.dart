@@ -8,7 +8,7 @@ class EventViewModel extends ChangeNotifier{
   final ClientDatabase clientDatabase = ClientDatabase.instance;
   String clientName = "TempName";
 
-  List<Events> events = [];
+  late Events events;
 
   Future<void> createDB() async{
     clientDatabase.setName(clientName);
@@ -18,6 +18,11 @@ class EventViewModel extends ChangeNotifier{
 
   Future<void> writeDB(Events userData) async{
     clientDatabase.writeData(data: userData);
+    notifyListeners();
+  }
+
+  Future<void> readDB() async{
+    events = await clientDatabase.readData();
     notifyListeners();
   }
 
