@@ -63,6 +63,25 @@ class ClientDatabase{
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
+  Future<Events> readData() async{
+    final getDB = await database;
+    final qEvents = await getDB.query('client');
+
+    if (qEvents.isEmpty){return Events(date: [], rand: [], info: []);}
+
+    List<String> dates = [];
+    List<String> rands = [];
+    List<String> infos = [];
+
+    qEvents.map((item){
+      dates.add((item['date'] as String?) ?? '');
+      rands.add((item['rand'] as String?) ?? '');
+      infos.add((item['info'] as String?) ?? '');
+    });
+
+    return Events(date: dates, rand: rands, info: infos);
+  }
+
   Future<void> clearDatabase() async {
     final tempDB = await database;
     tempDB.delete('client');
