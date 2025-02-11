@@ -32,7 +32,7 @@ class ClientDatabase{
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         date TEXT NOT NULL,
         rand TEXT NOT NULL,
-        description TEXT NOT NULL
+        info TEXT NOT NULL
         )
         '''
       );
@@ -45,7 +45,7 @@ class ClientDatabase{
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         date TEXT NOT NULL,
         rand TEXT NOT NULL,
-        description TEXT NOT NULL
+        info TEXT NOT NULL
         )
         '''
       );}
@@ -58,6 +58,9 @@ class ClientDatabase{
 
   Future<void> writeData({required Events data}) async{
     final tempDB = await database;
+
+    await tempDB.insert('client', data.toJson(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<void> clearDatabase() async {

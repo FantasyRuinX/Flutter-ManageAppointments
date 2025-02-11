@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../Data/eventModel.dart';
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -82,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
             ),
             const SizedBox(height: 10),
-            Expanded(child: clientList(context)),
+            Expanded(child: clientList(context,eventViewModel)),
             const SizedBox(height: 10),
 
             ],),
@@ -105,17 +107,17 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 
-Widget clientList(BuildContext context){
-  final List<String> clients = <String>['a','b','c','a','b','c','a','b','c','a','b','c','a','b','c','a','b','c'];
-  //['a','b','c'];
+Widget clientList(BuildContext context, EventViewModel eventViewModel){
+  //List<Events> clientEvents = eventViewModel.events;
+  final List<String> clients = ['a','b','c'];
+  clients.add(eventViewModel.clientName);
   return ListView.builder(
     padding: const EdgeInsets.all(8),
     itemCount: clients.length,
 
     itemBuilder: (BuildContext context, int index){
-      return Container(
+      return SizedBox(
         height: 50,
-        color : Colors.grey,
         child: Text(clients[index]),
       );
     },);

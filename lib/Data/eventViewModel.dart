@@ -1,6 +1,29 @@
 
+import 'package:Flutter_ManageAppointments/Business/sqlDatabase.dart';
 import 'package:flutter/foundation.dart';
+import 'package:Flutter_ManageAppointments/Data/eventModel.dart';
 
 class EventViewModel extends ChangeNotifier{
-  //TODO
+
+  final ClientDatabase clientDatabase = ClientDatabase.instance;
+  String clientName = "TempName";
+
+  List<Events> events = [];
+
+  Future<void> createDB() async{
+    clientDatabase.setName(clientName);
+    clientDatabase.initDatabase();
+    notifyListeners();
+  }
+
+  Future<void> writeDB(Events userData) async{
+    clientDatabase.writeData(data: userData);
+    notifyListeners();
+  }
+
+  Future<void> clearDB() async{
+    clientDatabase.clearDatabase();
+    notifyListeners();
+  }
+
 }
