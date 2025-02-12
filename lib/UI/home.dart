@@ -25,7 +25,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _focusedDate = DateTime.now();
   }
 
-  void setCurrentItem(int index) {
+  void setCurrentItem(BuildContext context, int index) {
     //Show Dialog variables
     String title = "";
 
@@ -34,7 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       switch (_selectedItem) {
         case 0:
-          title = "Add Client";
+          addAppointment(context);
           break;
         case 1:
           title = "Show Clients";
@@ -47,21 +47,6 @@ class _MyHomePageState extends State<MyHomePage> {
           break;
       }
     });
-
-    showDialog(
-        context: context,
-        builder: (builder) {
-          return AlertDialog(
-              title: Text(title),
-              content: const Text('Press me!'),
-              actions: <Widget>[
-                Center(
-                    child: FloatingActionButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Confirm'),
-                ))
-              ]);
-        });
   }
 
   @override
@@ -112,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   icon: Icon(Icons.remove), label: "Remove"),
             ],
             currentIndex: _selectedItem,
-            onTap: setCurrentItem,
+            onTap: (i) => setCurrentItem(context, i),
             type: BottomNavigationBarType.fixed,
             //Show all 4 icons because more than 3 makes it invisible
             selectedItemColor: Colors.indigo[900],
@@ -137,4 +122,46 @@ Widget clientList(BuildContext context, EventViewModel eventViewModel) {
       );
     },
   );
+}
+
+Future addAppointment(BuildContext context) {
+  return showDialog(
+      context: context,
+      builder: (builder) {
+        return AlertDialog(
+            title: const Text('Add new appointment'),
+            actions: <Widget>[
+              const TextField(
+
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "Enter client name")
+              ),
+              const TextField(
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "Enter time")
+              ),
+              const TextField(
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "Enter location")
+              ),
+              const TextField(
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "Enter payment")
+              ),
+              const TextField(
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "Enter description")
+              ),
+              Center(
+                  child: FloatingActionButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Confirm'),
+              ))
+            ]);
+      });
 }
