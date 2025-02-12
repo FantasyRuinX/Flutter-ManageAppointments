@@ -38,6 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
           break;
         case 1:
           title = "Show Clients";
+          Navigator.pushNamed(context,"/addAppointments");
           break;
         case 2:
           title = "Change Client";
@@ -132,7 +133,6 @@ Future addAppointment(BuildContext context) {
             title: const Text('Add new appointment'),
             actions: <Widget>[
               const TextField(
-
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: "Enter client name")

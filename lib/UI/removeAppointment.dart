@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class AddAppointment extends StatelessWidget {
+class RemoveAppointment extends StatelessWidget {
   final String title;
 
-  const AddAppointment({super.key, required this.title});
+  const RemoveAppointment({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
