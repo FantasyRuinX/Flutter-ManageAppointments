@@ -27,24 +27,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void setCurrentItem(BuildContext context, int index) {
     //Show Dialog variables
-    String title = "";
-
     setState(() {
       _selectedItem = index;
 
       switch (_selectedItem) {
         case 0:
-          addAppointment(context);
-          break;
-        case 1:
-          title = "Show Clients";
           Navigator.pushNamed(context,"/addAppointments");
           break;
+        case 1:
+          Navigator.pushNamed(context,"/listAppointments");
+          break;
         case 2:
-          title = "Change Client";
+          Navigator.pushNamed(context,"/changeAppointments");
           break;
         case 3:
-          title = "Remove Client";
+          Navigator.pushNamed(context,"/removeAppointments");
           break;
       }
     });
@@ -123,45 +120,4 @@ Widget clientList(BuildContext context, EventViewModel eventViewModel) {
       );
     },
   );
-}
-
-Future addAppointment(BuildContext context) {
-  return showDialog(
-      context: context,
-      builder: (builder) {
-        return AlertDialog(
-            title: const Text('Add new appointment'),
-            actions: <Widget>[
-              const TextField(
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: "Enter client name")
-              ),
-              const TextField(
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: "Enter time")
-              ),
-              const TextField(
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: "Enter location")
-              ),
-              const TextField(
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: "Enter payment")
-              ),
-              const TextField(
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: "Enter description")
-              ),
-              Center(
-                  child: FloatingActionButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Confirm'),
-              ))
-            ]);
-      });
 }

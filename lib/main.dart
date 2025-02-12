@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import 'UI/home.dart';
-import 'UI/addAppointment.dart';
 import 'package:provider/provider.dart';
 import 'package:Flutter_ManageAppointments/Data/eventViewModel.dart';
+
+import 'UI/home.dart';
+import 'UI/addAppointment.dart';
+import 'UI/listAppointment.dart';
+import 'UI/changeAppointment.dart';
+import 'UI/removeAppointment.dart';
 
 void main() {
   runApp(
@@ -28,9 +32,9 @@ class MyApp extends StatelessWidget {
       routes: {
         "/home" : (context) => const MyHomePage(title: 'Appointments'),
         "/addAppointments" : (context) => const AddAppointment(title: 'Add appointments'),
-        //"/listAppointments" : (context) => const ListAppointment(title: 'List appointments'),
-        //"/changeAppointments" : (context) => const ChangeAppointment(title: 'Change appointments'),
-        //"/removeAppointments" : (context) => const RemoveAppointment(title: 'Remove appointments'),
+        "/listAppointments" : (context) => const ListAppointment(title: 'List appointments'),
+        "/changeAppointments" : (context) => const ChangeAppointment(title: 'Change appointments'),
+        "/removeAppointments" : (context) => const RemoveAppointment(title: 'Remove appointments'),
       },
 
     );
