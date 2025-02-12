@@ -11,7 +11,6 @@ class EventViewModel extends ChangeNotifier{
   late Events events;
 
   Future<void> createDB() async{
-    clientDatabase.setName(clientName);
     clientDatabase.initDatabase();
     notifyListeners();
   }

@@ -6,6 +6,7 @@ import 'package:Flutter_ManageAppointments/Data/eventModel.dart';
 class ClientDatabase{
 
   static Database? db;
+  final String dbName = "clients";
   late final String dbNameClient;
 
   static final ClientDatabase instance = ClientDatabase._constructor();
@@ -17,18 +18,16 @@ class ClientDatabase{
     return db!;
   }
 
-  void setName(String name){dbNameClient = name;}
-
   Future<Database> initDatabase() async{
     
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath,'$dbNameClient.db');
+    final path = join(dbPath,'$dbName.db');
     
     final dbTemp = await openDatabase(path,version : 1,
         onCreate: (db,version) async {
       db.execute(
         '''
-        CREATE TABLE client(
+        CREATE TABLE $dbNameClient(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         date TEXT NOT NULL,
         rand TEXT NOT NULL,
