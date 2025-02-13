@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: "/home",
+      initialRoute: "/addAppointments",//"/home",
       routes: {
         "/home" : (context) => const MyHomePage(title: 'Appointments'),
         "/addAppointments" : (context) => const AddAppointment(title: 'Add appointments'),
