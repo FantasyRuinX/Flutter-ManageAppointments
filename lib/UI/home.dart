@@ -18,6 +18,7 @@ class _MyHomePageState extends State<MyHomePage> {
   DateTime? _selectedDate;
   DateTime _focusedDate = DateTime.now();
   int _selectedItem = 0;
+  List<String> clients = ['a', 'b', 'c'];
 
   @override
   void initState() {
@@ -32,16 +33,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
       switch (_selectedItem) {
         case 0:
-          Navigator.pushNamed(context,"/addAppointments");
+          Navigator.pushNamed(context, "/addAppointments");
           break;
         case 1:
-          Navigator.pushNamed(context,"/listAppointments");
+          Navigator.pushNamed(context, "/listAppointments");
           break;
         case 2:
-          Navigator.pushNamed(context,"/changeAppointments");
+          Navigator.pushNamed(context, "/changeAppointments");
           break;
         case 3:
-          Navigator.pushNamed(context,"/removeAppointments");
+          Navigator.pushNamed(context, "/removeAppointments");
           break;
       }
     });
@@ -80,7 +81,25 @@ class _MyHomePageState extends State<MyHomePage> {
                 eventLoader: (day) => [1, 2].isNotEmpty ? [1] : [],
               ),
               const SizedBox(height: 10),
-              Expanded(child: clientList(context, eventViewModel)),
+              Expanded(
+                  child: ListView.builder(
+                padding: const EdgeInsets.all(8),
+                itemCount: clients.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    spacing: 5,
+                    children: <Widget>[
+                      ElevatedButton(
+                          onPressed: () => setState(() {
+                                clients.removeAt(index);
+                              }),
+                          child: const Icon(Icons.clear)),
+                      Text(clients[index])
+                    ],
+                  );
+                },
+              )),
               const SizedBox(height: 10),
             ],
           ),
@@ -104,20 +123,4 @@ class _MyHomePageState extends State<MyHomePage> {
           ));
     });
   }
-}
-
-Widget clientList(BuildContext context, EventViewModel eventViewModel) {
-  //List<Events> clientEvents = eventViewModel.events;
-  final List<String> clients = ['a', 'b', 'c'];
-  clients.add(eventViewModel.clientName);
-  return ListView.builder(
-    padding: const EdgeInsets.all(8),
-    itemCount: clients.length,
-    itemBuilder: (BuildContext context, int index) {
-      return SizedBox(
-        height: 50,
-        child: Text(clients[index]),
-      );
-    },
-  );
 }

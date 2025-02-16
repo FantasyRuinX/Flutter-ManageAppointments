@@ -29,7 +29,7 @@ class _AddAppointmentState extends State<AddAppointment> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         centerTitle: true,
-        leading: null,
+        automaticallyImplyLeading: false,
         title: Text(widget.title),
       ),
       body: Column(
