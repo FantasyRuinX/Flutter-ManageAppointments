@@ -1,9 +1,8 @@
-import 'package:Flutter_ManageAppointments/Data/eventViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:Flutter_ManageAppointments/Data/eventViewModel.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../Data/eventModel.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -88,9 +87,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 itemBuilder: (BuildContext context, int index) {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    spacing: 5,
+                    spacing: 10,
                     children: <Widget>[
-                      ElevatedButton(
+                      FloatingActionButton.small(
                           onPressed: () => setState(() {
                                 clients.removeAt(index);
                               }),
@@ -110,8 +109,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   icon: Icon(Icons.person), label: "Clients"),
               BottomNavigationBarItem(
                   icon: Icon(Icons.change_circle), label: "Change"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.remove), label: "Remove"),
             ],
             currentIndex: _selectedItem,
             onTap: (i) => setCurrentItem(context, i),

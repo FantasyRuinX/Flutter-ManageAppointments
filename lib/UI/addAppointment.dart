@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'package:Flutter_ManageAppointments/Data/eventModel.dart';
+import 'package:Flutter_ManageAppointments/Data/eventViewModel.dart';
+
 class AddAppointment extends StatefulWidget {
   final String title;
 
@@ -22,6 +25,10 @@ class _AddAppointmentState extends State<AddAppointment> {
   String clientName = "";
   String location = "";
   String description = "";
+
+  void addEvent(String name,String location,int amount,String descr,TimeOfDay time,DateTime date){
+    //Events newEvent = Events(date: date, rand: amount.toString(), info: info)
+  }
 
   @override
   Widget build(BuildContext context) {

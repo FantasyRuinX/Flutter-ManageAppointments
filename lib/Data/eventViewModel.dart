@@ -6,27 +6,26 @@ import 'package:Flutter_ManageAppointments/Data/eventModel.dart';
 class EventViewModel extends ChangeNotifier{
 
   final ClientDatabase clientDatabase = ClientDatabase.instance;
-  String clientName = "TempName";
 
   late Events events;
 
-  Future<void> createDB() async{
-    clientDatabase.initDatabase();
+  Future<void> createDB({required String tableName}) async{
+    clientDatabase.initDatabase(tableName);
     notifyListeners();
   }
 
-  Future<void> writeDB(Events userData) async{
-    clientDatabase.writeData(data: userData);
+  Future<void> writeDB({required String tableName,required Events userData}) async{
+    clientDatabase.writeData(tableName, userData);
     notifyListeners();
   }
 
-  Future<void> readDB() async{
-    events = await clientDatabase.readData();
+  Future<void> readDB({required String tableName}) async{
+    events = await clientDatabase.readData(tableName);
     notifyListeners();
   }
 
-  Future<void> clearDB() async{
-    clientDatabase.clearDatabase();
+  Future<void> clearDB({required String tableName}) async{
+    clientDatabase.clearDatabase(tableName);
     notifyListeners();
   }
 

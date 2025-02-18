@@ -14,11 +14,11 @@ class ClientDatabase{
 
   Future<Database> get database async {
     if (db != null) return db!;
-    db = await initDatabase();
+    db = await initDatabase(dbNameClient);
     return db!;
   }
 
-  Future<Database> initDatabase() async{
+  Future<Database> initDatabase(String tableName) async{
     
     final dbPath = await getDatabasesPath();
     final path = join(dbPath,'$dbName.db');
@@ -27,7 +27,7 @@ class ClientDatabase{
         onCreate: (db,version) async {
       db.execute(
         '''
-        CREATE TABLE $dbNameClient(
+        CREATE TABLE $tableName(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         date TEXT NOT NULL,
         rand TEXT NOT NULL,
@@ -40,7 +40,7 @@ class ClientDatabase{
       if (oldVersion < newVersion){
       db.execute(
         '''
-        CREATE TABLE client(
+        CREATE TABLE $tableName(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         date TEXT NOT NULL,
         rand TEXT NOT NULL,
@@ -55,16 +55,16 @@ class ClientDatabase{
     return dbTemp;
   }
 
-  Future<void> writeData({required Events data}) async{
+  Future<void> writeData(String tableName, Events data) async{
     final tempDB = await database;
 
-    await tempDB.insert('client', data.toJson(),
+    await tempDB.insert(tableName, data.toJson(),
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  Future<Events> readData() async{
+  Future<Events> readData(String tableName) async{
     final getDB = await database;
-    final qEvents = await getDB.query('client');
+    final qEvents = await getDB.query(tableName);
 
     if (qEvents.isEmpty){return Events(date: [], rand: [], info: []);}
 
@@ -81,9 +81,9 @@ class ClientDatabase{
     return Events(date: dates, rand: rands, info: infos);
   }
 
-  Future<void> clearDatabase() async {
+  Future<void> clearDatabase(String tableName) async {
     final tempDB = await database;
-    tempDB.delete('client');
+    tempDB.delete(tableName);
   }
 
 }
