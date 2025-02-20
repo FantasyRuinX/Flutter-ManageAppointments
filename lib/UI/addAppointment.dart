@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import 'package:Flutter_ManageAppointments/Data/eventModel.dart';
 import 'package:Flutter_ManageAppointments/Data/eventViewModel.dart';
@@ -26,12 +27,18 @@ class _AddAppointmentState extends State<AddAppointment> {
   String location = "";
   String description = "";
 
-  void addEvent(String name,String location,int amount,String descr,TimeOfDay time,DateTime date){
-    //Events newEvent = Events(date: date, rand: amount.toString(), info: info)
+  void addEvent(EventViewModel viewmodel,String name,String location,int amount,String descr,TimeOfDay time,DateTime date){
+    //check if table exists (with name) otherwise create it
+    //if table has event in it do not add it give msg to say it already exists
+
+    Event newEvent = Event(date: "$selectedDate at $selectedTime", rand: amount.toString(), info: descr,location: location);
+    viewmodel.writeDB(tableName: name, userData: newEvent);
+    print("$clientName at $location for $amount on $selectedDate at $selectedTime");
   }
 
   @override
   Widget build(BuildContext context) {
+    return Consumer<EventViewModel>(builder: (context, eventViewModel,child){
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -154,9 +161,10 @@ class _AddAppointmentState extends State<AddAppointment> {
                             clientName = textControllerName.text;
                             location = textControllerLocation.text;
                             amount = int.parse(textControllerAmount.text);
+                            description = textControllerDescr.text;
                           });
-                          print(
-                              "$clientName at $location for $amount on $selectedDate at $selectedTime");
+                          addEvent(eventViewModel,clientName,location,amount,description,selectedTime!,selectedDate!);
+
                         })),
             SizedBox(
                 height: 50,
@@ -167,6 +175,6 @@ class _AddAppointmentState extends State<AddAppointment> {
                       Navigator.of(context).pop();
                     })),
           ]),
-    );
+    );});
   }
 }

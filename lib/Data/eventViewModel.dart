@@ -7,14 +7,14 @@ class EventViewModel extends ChangeNotifier{
 
   final ClientDatabase clientDatabase = ClientDatabase.instance;
 
-  late Events events;
+  late List<Event> events;
 
   Future<void> createDB({required String tableName}) async{
     clientDatabase.initDatabase(tableName);
     notifyListeners();
   }
 
-  Future<void> writeDB({required String tableName,required Events userData}) async{
+  Future<void> writeDB({required String tableName,required Event userData}) async{
     clientDatabase.writeData(tableName, userData);
     notifyListeners();
   }
@@ -26,6 +26,11 @@ class EventViewModel extends ChangeNotifier{
 
   Future<void> clearDB({required String tableName}) async{
     clientDatabase.clearDatabase(tableName);
+    notifyListeners();
+  }
+
+  Future<void> getDBPath() async{
+    clientDatabase.getPath();
     notifyListeners();
   }
 

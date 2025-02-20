@@ -91,6 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: <Widget>[
                       FloatingActionButton.small(
                           onPressed: () => setState(() {
+                                eventViewModel.getDBPath();
                                 clients.removeAt(index);
                               }),
                           child: const Icon(Icons.clear)),

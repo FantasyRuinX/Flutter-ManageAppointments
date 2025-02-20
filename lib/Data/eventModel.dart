@@ -1,20 +1,23 @@
 
-class Events{
+class Event{
 
-  final List<String> date;
-  final List<String> rand;
-  final List<String> info;
+  final String date;
+  final String rand;
+  final String info;
+  final String location;
 
-  Events({
+  Event({
     required this.date,
     required this.rand,
-    required this.info
+    required this.info,
+    required this.location
   });
 
-  Events.fromJson(Map<String, dynamic> jsonMap) : this(
-    date : List<String>.from(jsonMap['started'] as List),
-    rand : List<String>.from(jsonMap['rand'] as List),
-    info : List<String>.from(jsonMap['info'] as List)
+  Event.fromJson(Map<String, dynamic> jsonMap) : this(
+    date : jsonMap['started'],
+    rand : jsonMap['rand'],
+    info : jsonMap['info'],
+    location : jsonMap['location']
   );
 
   Map<String, Object?> toJson() {
@@ -23,6 +26,7 @@ class Events{
       'date': date.toString(),
       'rand': rand.toString(),
       'info': info.toString(),
+      'location': location.toString(),
     };
   }
 
@@ -35,10 +39,11 @@ class Events{
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is Events &&
+    return other is Event &&
         other.date == date &&
         other.rand == rand &&
-        other.info == info;
+        other.info == info &&
+        other.location == location;
   }
 
   @override

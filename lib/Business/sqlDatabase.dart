@@ -31,7 +31,8 @@ class ClientDatabase{
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         date TEXT NOT NULL,
         rand TEXT NOT NULL,
-        info TEXT NOT NULL
+        info TEXT NOT NULL,
+        location TEXT NOT NULL
         )
         '''
       );
@@ -44,7 +45,8 @@ class ClientDatabase{
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         date TEXT NOT NULL,
         rand TEXT NOT NULL,
-        info TEXT NOT NULL
+        info TEXT NOT NULL,
+        location TEXT NOT NULL
         )
         '''
       );}
@@ -55,35 +57,39 @@ class ClientDatabase{
     return dbTemp;
   }
 
-  Future<void> writeData(String tableName, Events data) async{
+  Future<void> writeData(String tableName, Event data) async{
     final tempDB = await database;
 
     await tempDB.insert(tableName, data.toJson(),
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  Future<Events> readData(String tableName) async{
+  Future<List<Event>> readData(String tableName) async{
     final getDB = await database;
     final qEvents = await getDB.query(tableName);
 
-    if (qEvents.isEmpty){return Events(date: [], rand: [], info: []);}
+    if (qEvents.isEmpty){return [];}
 
-    List<String> dates = [];
-    List<String> rands = [];
-    List<String> infos = [];
+    List<Event> userEvents = [];
 
     qEvents.map((item){
-      dates.add((item['date'] as String?) ?? '');
-      rands.add((item['rand'] as String?) ?? '');
-      infos.add((item['info'] as String?) ?? '');
+      userEvents.add(Event(date: item['date'].toString(),
+          rand: item['rand'].toString(),
+          info: item['info'].toString(),
+          location: item['location'].toString()));
     });
 
-    return Events(date: dates, rand: rands, info: infos);
+    return userEvents;
   }
 
   Future<void> clearDatabase(String tableName) async {
     final tempDB = await database;
     tempDB.delete(tableName);
+  }
+
+  Future<void> getPath() async{
+    final dbPath = await getDatabasesPath();
+    print(dbPath);
   }
 
 }
