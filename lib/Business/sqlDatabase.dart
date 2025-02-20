@@ -21,8 +21,6 @@ class ClientDatabase {
   Future<Database> initDatabase(String tableName) async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, '$dbName.db');
-    //await deleteDatabase(path);
-    print("creating table with name $tableName");
 
     final dbTemp =
     await openDatabase(path, version: 1, onCreate: (db, version) async {
@@ -56,11 +54,6 @@ class ClientDatabase {
     dbNameClient = tableName;
     final tempDB = await database;
 
-    print("----");
-    (await tempDB.query('sqlite_master', columns: ['type', 'name'])).forEach((row) {
-      print(row.values.last);
-    });
-
     //Add table if not there
     List<String> dbTables = [];
     (await tempDB.query('sqlite_master', columns: ['type', 'name'])).forEach((row) {
@@ -77,9 +70,6 @@ class ClientDatabase {
         location TEXT NOT NULL
         )
         ''');
-      print("Table '$tableName' created.");
-    } else {
-      print("Table '$tableName' already exists.");
     }
 
     await tempDB.insert(tableName, data.toJson(),
@@ -91,36 +81,45 @@ class ClientDatabase {
     final tableNames = await getAllTableNames();
     Map<String,List<Event>> userEvents = {};
 
-    tableNames.map((tableName) async {
+    for (var tableName in tableNames) {
       var qEvents = await getDB.query(tableName);
 
-      if (qEvents.isEmpty) {
-        return [];
-      }
+      userEvents[tableName] = [];
 
-      userEvents[tableName];
-      qEvents.map((item) {
+      for (var item in qEvents) {
+        print("date : ${item['date'].toString()} for $tableName");
         userEvents[tableName]?.add(Event(
             date: item['date'].toString(),
             rand: item['rand'].toString(),
             info: item['info'].toString(),
             location: item['location'].toString()));
+      }
+
+    }
+
+    //Print info
+    print("----> Printing out all events : ${userEvents.length}");
+    // Print each table and its events
+    print("Table: ${userEvents.keys}");
+    userEvents.forEach((tableName, eventList) {
+      //print("Table name of events: $tableName");
+      eventList.forEach((event) {
+        print(event.info);
       });
     });
+    //
 
     return userEvents;
   }
 
-  Future<void> clearDatabase(String tableName) async {
-    dbNameClient = tableName;
-    final tempDB = await database;
-    tempDB.delete(tableName);
+  Future<void> clearDatabase() async {
+    final dbPath = await getDatabasesPath();
+    final path = join(dbPath, '$dbName.db');
+    await deleteDatabase(path);
   }
 
-  Future<void> getPath() async {
-    final dbPath = await getDatabasesPath();
-    print(dbPath);
-  }
+  //Future<void> clearTable() async {}
+
 
   Future<List<String>> getAllTableNames() async {
     List<String> dbTables = [];

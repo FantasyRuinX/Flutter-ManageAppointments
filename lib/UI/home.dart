@@ -42,9 +42,6 @@ class _MyHomePageState extends State<MyHomePage> {
         case 2:
           Navigator.pushNamed(context, "/changeAppointments");
           break;
-        case 3:
-          Navigator.pushNamed(context, "/removeAppointments");
-          break;
       }
     });
   }
@@ -72,6 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onDaySelected: (selectedDay, focusedDay) async {
                   if (!isSameDay(_selectedDate, selectedDay)) {
                     await eventViewModel.readDB();
+
                     await eventViewModel.getClientNames();
                     setState(() {
                       _selectedDate = selectedDay;
@@ -79,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       clients = eventViewModel.events;
                       clientNames = eventViewModel.clientNames;
                     });
-                    print(clientNames.toString());
+                    //print(clientNames.toString());
                   }
                 },
                 //----------------
@@ -87,7 +85,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 eventLoader: (day) => [1, 2].isNotEmpty ? [1] : [],
               ),
               const SizedBox(height: 10),
-              Expanded(
+          
+          ElevatedButton(
+            onPressed: () async {
+              eventViewModel.clearDB();
+            },
+            child:Icon(Icons.remove)),
+            
+            Expanded(
                   child: ListView.builder(
                 padding: const EdgeInsets.all(8),
                 itemCount: clientNames.length,
@@ -98,7 +103,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: <Widget>[
                       FloatingActionButton.small(
                           onPressed: () => setState(() {
-                                eventViewModel.getDBPath();
                                 clientNames.removeAt(index);
                               }),
                           child: const Icon(Icons.clear)),
@@ -116,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
               BottomNavigationBarItem(
                   icon: Icon(Icons.person), label: "Clients"),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.change_circle), label: "Change"),
+                  icon: Icon(Icons.remove), label: "Clear database"),
             ],
             currentIndex: _selectedItem,
             onTap: (i) => setCurrentItem(context, i),

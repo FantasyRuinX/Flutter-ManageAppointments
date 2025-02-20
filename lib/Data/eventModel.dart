@@ -33,7 +33,7 @@ class Event{
 
   @override
   String toString() {
-    return "$date : ${info.length} events";
+    return "$date : $info";
   }
 
   @override
