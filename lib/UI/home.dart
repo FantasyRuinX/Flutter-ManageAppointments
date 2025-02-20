@@ -1,3 +1,4 @@
+import 'package:Flutter_ManageAppointments/Data/eventModel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:Flutter_ManageAppointments/Data/eventViewModel.dart';
@@ -17,7 +18,8 @@ class _MyHomePageState extends State<MyHomePage> {
   DateTime? _selectedDate;
   DateTime _focusedDate = DateTime.now();
   int _selectedItem = 0;
-  List<String> clients = ['a', 'b', 'c'];
+  Map<String,List<Event>> clients = {};
+  List<String> clientNames = [];
 
   @override
   void initState() {
@@ -67,12 +69,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 //Show selected date
                 selectedDayPredicate: (day) => isSameDay(_selectedDate, day),
 
-                onDaySelected: (selectedDay, focusedDay) {
+                onDaySelected: (selectedDay, focusedDay) async {
                   if (!isSameDay(_selectedDate, selectedDay)) {
+                    await eventViewModel.readDB();
+                    await eventViewModel.getClientNames();
                     setState(() {
                       _selectedDate = selectedDay;
                       _focusedDate = focusedDay;
+                      clients = eventViewModel.events;
+                      clientNames = eventViewModel.clientNames;
                     });
+                    print(clientNames.toString());
                   }
                 },
                 //----------------
@@ -83,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Expanded(
                   child: ListView.builder(
                 padding: const EdgeInsets.all(8),
-                itemCount: clients.length,
+                itemCount: clientNames.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -92,10 +99,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       FloatingActionButton.small(
                           onPressed: () => setState(() {
                                 eventViewModel.getDBPath();
-                                clients.removeAt(index);
+                                clientNames.removeAt(index);
                               }),
                           child: const Icon(Icons.clear)),
-                      Text(clients[index])
+                      Text(clientNames[index].toString())
                     ],
                   );
                 },

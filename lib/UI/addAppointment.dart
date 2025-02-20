@@ -27,12 +27,16 @@ class _AddAppointmentState extends State<AddAppointment> {
   String location = "";
   String description = "";
 
-  void addEvent(EventViewModel viewmodel,String name,String location,int amount,String descr,TimeOfDay time,DateTime date){
+  Future<void> addEvent(EventViewModel viewmodel,String name,String location,int amount,String descr,TimeOfDay time,DateTime date) async{
     //check if table exists (with name) otherwise create it
     //if table has event in it do not add it give msg to say it already exists
+    await viewmodel.getClientNames();
 
-    Event newEvent = Event(date: "$selectedDate at $selectedTime", rand: amount.toString(), info: descr,location: location);
-    viewmodel.writeDB(tableName: name, userData: newEvent);
+    //Event newEvent = Event(date: "$selectedDate at $selectedTime", rand: amount.toString(), info: descr,location: location);
+
+    Event newEvent = Event(date: "$selectedDate at $selectedTime", rand: "12", info: "descr",location: "location");
+
+    viewmodel.writeDB(tableName: "name", userData: newEvent);
     print("$clientName at $location for $amount on $selectedDate at $selectedTime");
   }
 
@@ -160,11 +164,11 @@ class _AddAppointmentState extends State<AddAppointment> {
                           setState(() {
                             clientName = textControllerName.text;
                             location = textControllerLocation.text;
-                            amount = int.parse(textControllerAmount.text);
+                            //amount = int.parse(textControllerAmount.text);
                             description = textControllerDescr.text;
                           });
                           addEvent(eventViewModel,clientName,location,amount,description,selectedTime!,selectedDate!);
-
+                          Navigator.of(context).pop();
                         })),
             SizedBox(
                 height: 50,

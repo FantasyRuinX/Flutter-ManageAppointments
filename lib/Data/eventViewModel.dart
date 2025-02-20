@@ -7,7 +7,8 @@ class EventViewModel extends ChangeNotifier{
 
   final ClientDatabase clientDatabase = ClientDatabase.instance;
 
-  late List<Event> events;
+  late Map<String,List<Event>> events;
+  late List<String> clientNames;
 
   Future<void> createDB({required String tableName}) async{
     clientDatabase.initDatabase(tableName);
@@ -19,8 +20,8 @@ class EventViewModel extends ChangeNotifier{
     notifyListeners();
   }
 
-  Future<void> readDB({required String tableName}) async{
-    events = await clientDatabase.readData(tableName);
+  Future<void> readDB() async{
+    events = await clientDatabase.readData();
     notifyListeners();
   }
 
@@ -31,6 +32,11 @@ class EventViewModel extends ChangeNotifier{
 
   Future<void> getDBPath() async{
     clientDatabase.getPath();
+    notifyListeners();
+  }
+
+  Future<void> getClientNames() async{
+    clientNames = await clientDatabase.getAllTableNames();
     notifyListeners();
   }
 
