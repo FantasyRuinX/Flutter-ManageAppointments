@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:Flutter_ManageAppointments/Data/eventViewModel.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -18,13 +17,24 @@ class _MyHomePageState extends State<MyHomePage> {
   DateTime? _selectedDate;
   DateTime _focusedDate = DateTime.now();
   int _selectedItem = 0;
-  Map<String,List<Event>> clients = {};
+  Map<String, List<Event>> clients = {};
   List<String> clientNames = [];
 
   @override
   void initState() {
     super.initState();
     _focusedDate = DateTime.now();
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    final eventViewModel = Provider.of<EventViewModel>(context,listen: false);
+    await eventViewModel.readDB();
+    await eventViewModel.getClientNames();
+    setState(() {
+      clients = eventViewModel.events;
+      clientNames = eventViewModel.clientNames;
+    });
   }
 
   void setCurrentItem(BuildContext context, int index) {
@@ -44,6 +54,28 @@ class _MyHomePageState extends State<MyHomePage> {
           break;
       }
     });
+  }
+
+  Widget appointmentList() {
+    return ListView.builder(
+      padding: const EdgeInsets.all(8),
+      itemCount: clientNames.length,
+      itemBuilder: (BuildContext context, int index) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          spacing: 10,
+          children: <Widget>[
+            FloatingActionButton.small(
+                onPressed: () => setState(() {
+                      clientNames.removeAt(index);
+                    }),
+                child: const Icon(Icons.clear)),
+            Text(clientNames[index].toString()),
+            //Text(event.toString())
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -85,32 +117,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 eventLoader: (day) => [1, 2].isNotEmpty ? [1] : [],
               ),
               const SizedBox(height: 10),
-          
-          ElevatedButton(
-            onPressed: () async {
-              eventViewModel.clearDB();
-            },
-            child:Icon(Icons.remove)),
-            
-            Expanded(
-                  child: ListView.builder(
-                padding: const EdgeInsets.all(8),
-                itemCount: clientNames.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    spacing: 10,
-                    children: <Widget>[
-                      FloatingActionButton.small(
-                          onPressed: () => setState(() {
-                                clientNames.removeAt(index);
-                              }),
-                          child: const Icon(Icons.clear)),
-                      Text(clientNames[index].toString())
-                    ],
-                  );
-                },
-              )),
+              ElevatedButton(
+                  onPressed: () async {
+                    eventViewModel.clearDB();
+                  },
+                  child: Icon(Icons.remove)),
+              Expanded(child: appointmentList()),
               const SizedBox(height: 10),
             ],
           ),
