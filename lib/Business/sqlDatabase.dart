@@ -76,23 +76,22 @@ class ClientDatabase {
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  Future<Map<String,List<Event>>> readData() async {
+  Future<List<Map<String,Event>> > readData() async {
     final getDB = await database;
     final tableNames = await getAllTableNames();
-    Map<String,List<Event>> userEvents = {};
+    List<Map<String,Event>> userEvents = [];
 
     for (var tableName in tableNames) {
       var qEvents = await getDB.query(tableName);
 
-      userEvents[tableName] = [];
-
       for (var item in qEvents) {
         print("date : ${item['date'].toString()} for $tableName");
-        userEvents[tableName]?.add(Event(
+        Event tempEvent = Event(
             date: item['date'].toString(),
             rand: item['rand'].toString(),
             info: item['info'].toString(),
-            location: item['location'].toString()));
+            location: item['location'].toString());
+        userEvents.add({tableName : tempEvent});
       }
 
     }
@@ -100,13 +99,17 @@ class ClientDatabase {
     //Print info
     print("----> Printing out all events : ${userEvents.length}");
     // Print each table and its events
-    print("Table: ${userEvents.keys}");
-    userEvents.forEach((tableName, eventList) {
-      //print("Table name of events: $tableName");
-      eventList.forEach((event) {
-        print(event.info);
-      });
+    userEvents.forEach((Map<String, Event> item){
+      print("Client ${item.keys} on ${item.values}");
     });
+
+    //print("Table: ${userEvents.}");
+    // userEvents.forEach((tableName, eventList) {
+    //   //print("Table name of events: $tableName");
+    //   eventList.forEach((event) {
+    //     print(event.info);
+    //   });
+    // });
     //
 
     return userEvents;
