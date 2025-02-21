@@ -17,7 +17,7 @@ class _MyHomePageState extends State<MyHomePage> {
   DateTime? _selectedDate;
   DateTime _focusedDate = DateTime.now();
   int _selectedItem = 0;
-  Map<String, List<Event>> clients = {};
+  List<Map<String,Event>> clients = [];
   List<String> clientNames = [];
 
   @override
@@ -32,7 +32,7 @@ class _MyHomePageState extends State<MyHomePage> {
     await eventViewModel.readDB();
     await eventViewModel.getClientNames();
     setState(() {
-      clients = eventViewModel.events;
+      clients = eventViewModel.organisedEvents;
       clientNames = eventViewModel.clientNames;
     });
   }
@@ -106,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     setState(() {
                       _selectedDate = selectedDay;
                       _focusedDate = focusedDay;
-                      clients = eventViewModel.events;
+                      clients = eventViewModel.organisedEvents;
                       clientNames = eventViewModel.clientNames;
                     });
                     //print(clientNames.toString());

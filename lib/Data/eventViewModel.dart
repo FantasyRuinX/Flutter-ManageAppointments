@@ -6,7 +6,7 @@ class EventViewModel extends ChangeNotifier{
 
   final ClientDatabase clientDatabase = ClientDatabase.instance;
 
-  late Map<String,List<Event>> events;
+  late List<Map<String,Event>> organisedEvents;
   late List<String> clientNames;
 
   Future<void> createDB({required String tableName}) async{
@@ -20,7 +20,7 @@ class EventViewModel extends ChangeNotifier{
   }
 
   Future<void> readDB() async{
-    events = await clientDatabase.readData();
+    organisedEvents = await clientDatabase.readData();
     notifyListeners();
   }
 
