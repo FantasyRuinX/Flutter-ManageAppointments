@@ -15,6 +15,7 @@ class EventViewModel extends ChangeNotifier{
   }
 
   Future<void> writeDB({required String tableName,required Event userData}) async{
+    //TODO : error when adding a space or numbers to the name, sql doesn't allow that
     clientDatabase.writeData(tableName, userData);
     notifyListeners();
   }
