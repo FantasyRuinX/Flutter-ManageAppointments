@@ -24,6 +24,11 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     _focusedDate = DateTime.now();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     loadData();
   }
 
@@ -56,10 +61,14 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  String setOutputEventText(Map<String,Event> event){
+    return "${event.keys.first} : ${(event.values.first).date}\n${(event.values.first).info}";
+  }
+
   Widget appointmentList() {
     return ListView.builder(
       padding: const EdgeInsets.all(8),
-      itemCount: clientNames.length,
+      itemCount: clients.length,
       itemBuilder: (BuildContext context, int index) {
         return Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -67,11 +76,10 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             FloatingActionButton.small(
                 onPressed: () => setState(() {
-                      clientNames.removeAt(index);
+                  clients.removeAt(index);
                     }),
                 child: const Icon(Icons.clear)),
-            Text(clientNames[index].toString()),
-            //Text(event.toString())
+            Text(setOutputEventText(clients[index])),
           ],
         );
       },
@@ -109,7 +117,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       clients = eventViewModel.organisedEvents;
                       clientNames = eventViewModel.clientNames;
                     });
-                    //print(clientNames.toString());
                   }
                 },
                 //----------------
