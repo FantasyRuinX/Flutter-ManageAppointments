@@ -76,7 +76,7 @@ class ClientDatabase {
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  Future<List<Map<String,Event>> > readData() async {
+  Future<List<Map<String,Event>>> readData() async {
     final getDB = await database;
     final tableNames = await getAllTableNames();
     List<Map<String,Event>> userEvents = [];
@@ -85,7 +85,6 @@ class ClientDatabase {
       var qEvents = await getDB.query(tableName);
 
       for (var item in qEvents) {
-        print("date : ${item['date'].toString()} for $tableName");
         Event tempEvent = Event(
             date: item['date'].toString(),
             rand: item['rand'].toString(),
@@ -102,15 +101,6 @@ class ClientDatabase {
     userEvents.forEach((Map<String, Event> item){
       print("Client ${item.keys} on ${item.values}");
     });
-
-    //print("Table: ${userEvents.}");
-    // userEvents.forEach((tableName, eventList) {
-    //   //print("Table name of events: $tableName");
-    //   eventList.forEach((event) {
-    //     print(event.info);
-    //   });
-    // });
-    //
 
     return userEvents;
   }
@@ -134,6 +124,7 @@ class ClientDatabase {
 
     dbTables.remove("android_metadata");
     dbTables.remove("sqlite_sequence");
+    dbTables.remove("DummyName");
 
     return dbTables;
   }

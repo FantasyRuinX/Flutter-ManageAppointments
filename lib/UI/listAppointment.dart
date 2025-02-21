@@ -73,7 +73,7 @@ class _ListAppointmentState extends State<ListAppointment> {
                         child:
                             const Text(style: TextStyle(fontSize: 17), "Back"),
                         onPressed: () {
-                          Navigator.of(context).pop();
+                          Navigator.of(context).pushNamed("/home");
                         })),
                 const SizedBox(
                   height: 50,
