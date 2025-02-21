@@ -30,9 +30,11 @@ class _AddAppointmentState extends State<AddAppointment> {
   Future<void> addEvent(EventViewModel viewmodel,String name,String location,int amount,String descr,TimeOfDay time,DateTime date) async{
     await viewmodel.getClientNames();
 
-    Event newEvent = Event(date: "$selectedDate at $selectedTime", rand: amount.toString(), info: descr,location: location);
+    String eventDate = "${DateFormat("yyyy-MM-dd").format(selectedDate!)}T${selectedTime?.hour}:${selectedTime?.minute}.000000";
+    Event newEvent = Event(date: eventDate, rand: amount.toString(), info: descr,location: location);
     viewmodel.writeDB(tableName: name, userData: newEvent);
-    print("$clientName at $location for $amount on $selectedDate at $selectedTime");
+
+    print("$clientName at $location for $amount on $eventDate");
   }
 
   @override
@@ -159,11 +161,11 @@ class _AddAppointmentState extends State<AddAppointment> {
                           setState(() {
                             clientName = textControllerName.text;
                             location = textControllerLocation.text;
-                            //amount = int.parse(textControllerAmount.text);
+                            amount = int.parse(textControllerAmount.text);
                             description = textControllerDescr.text;
                           });
                           addEvent(eventViewModel,clientName,location,amount,description,selectedTime!,selectedDate!);
-                          Navigator.of(context).pop();
+                          Navigator.of(context).pushNamed("/home");
                         })),
             SizedBox(
                 height: 50,
@@ -171,7 +173,7 @@ class _AddAppointmentState extends State<AddAppointment> {
                 child: FloatingActionButton.large(
                     child: const Text(style: TextStyle(fontSize: 17),"Back"),
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      Navigator.of(context).pushNamed("/home");
                     })),
           ]),
     );});
