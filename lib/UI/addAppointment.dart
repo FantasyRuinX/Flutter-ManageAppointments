@@ -30,7 +30,7 @@ class _AddAppointmentState extends State<AddAppointment> {
   Future<void> addEvent(EventViewModel viewmodel,String name,String location,int amount,String descr,TimeOfDay time,DateTime date) async{
     await viewmodel.getClientNames();
 
-    String eventDate = "${DateFormat("yyyy-MM-dd").format(selectedDate!)}T${selectedTime?.hour}:${selectedTime?.minute}.000000";
+    String eventDate = "${DateFormat("yyyy-MM-dd").format(selectedDate!)}T${selectedTime?.hour}:${selectedTime?.minute}";
     Event newEvent = Event(date: eventDate, rand: amount.toString(), info: descr,location: location);
     viewmodel.writeDB(tableName: name, userData: newEvent);
 
