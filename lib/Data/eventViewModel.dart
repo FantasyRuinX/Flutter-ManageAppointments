@@ -20,6 +20,16 @@ class EventViewModel extends ChangeNotifier{
     notifyListeners();
   }
 
+  Future<void> clearEventDB({required String tableName,required Event userData}) async{
+    clientDatabase.clearEvent(tableName, userData);
+    notifyListeners();
+  }
+
+  Future<void> updateEventDB({required String tableName,required Event userData}) async{
+    clientDatabase.updateEvent(tableName, userData);
+    notifyListeners();
+  }
+
   Future<void> readDB() async{
     organisedEvents = await clientDatabase.readData();
     notifyListeners();
