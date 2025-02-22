@@ -76,6 +76,14 @@ class ClientDatabase {
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
+  //Future<void> clearEvent(String table, Event data) async {}
+
+  Future<void> updateEvent(String table, Event newData) async {
+    final tempDB = await database;
+
+    await tempDB.update(table, newData.toJson(), where : 'date = ? AND info = ?', whereArgs: [newData.date,newData.info]);
+  }
+
   Future<List<Map<String,Event>>> readData() async {
     final getDB = await database;
     final tableNames = await getAllTableNames();
@@ -110,9 +118,6 @@ class ClientDatabase {
     final path = join(dbPath, '$dbName.db');
     await deleteDatabase(path);
   }
-
-  //Future<void> clearTable() async {}
-
 
   Future<List<String>> getAllTableNames() async {
     List<String> dbTables = [];
