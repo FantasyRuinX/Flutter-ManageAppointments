@@ -76,7 +76,11 @@ class ClientDatabase {
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  //Future<void> clearEvent(String table, Event data) async {}
+  Future<void> clearEvent(String table, Event data) async {
+    final tempDB = await database;
+
+    await tempDB.delete(table, where : 'date = ? AND info = ?', whereArgs: [data.date,data.info]);
+  }
 
   Future<void> updateEvent(String table, Event newData) async {
     final tempDB = await database;
