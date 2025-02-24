@@ -24,9 +24,8 @@ class _ListAppointmentState extends State<ListAppointment> {
   void loadData() async {
     final eventViewModel = Provider.of<EventViewModel>(context, listen: false);
     await eventViewModel.readDB();
-    await eventViewModel.getClientNames();
     setState(() {
-      clientNames = eventViewModel.clientNames;
+      clientNames = eventViewModel.organisedEvents.map((event) => event.name).toList();
     });
   }
 

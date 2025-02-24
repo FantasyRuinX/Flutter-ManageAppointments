@@ -17,8 +17,7 @@ class _MyHomePageState extends State<MyHomePage> {
   DateTime? _selectedDate;
   DateTime _focusedDate = DateTime.now();
   int _selectedItem = 0;
-  List<Map<String, Event>> clients = [];
-  List<String> clientNames = [];
+  List<Event> clients = [];
   List<String> clientDates = [];
 
   @override
@@ -36,15 +35,13 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> loadData() async {
     final eventViewModel = Provider.of<EventViewModel>(context, listen: false);
     await eventViewModel.readDB();
-    await eventViewModel.getClientNames();
     setState(() {
       clients = eventViewModel.organisedEvents;
-      clientNames = eventViewModel.clientNames;
 
-      for (Map<String, Event> event in clients){
-        clientDates.add((event.values.first).date.split("T")[0]);
+      for (Event event in clients){
+        clientDates.add(event.date.split("T")[0]);
       }
-
+    print("Loaded data");
     });
   }
 
@@ -70,6 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   actions: [
                     TextButton(
                         onPressed: () {
+                          loadData();
                           Navigator.of(context).pop();
                         },
                         child: const Text("Close")),
@@ -81,15 +79,15 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  String setOutputEventText(Map<String, Event> event) {
-    List<String> eventTime = (event.values.first).date.split("T");
-    return "${event.keys.first} at ${eventTime[1]}";
+  String setOutputEventText(Event event) {
+    List<String> eventTime = event.date.split("T");
+    return "${event.name} at ${eventTime[1]}";
   }
 
-  Widget appointmentList() {
-    List<Map<String, Event>> clientsOnDay = [];
-    for (Map<String, Event> event in clients){
-      if ((event.values.first).date.split("T")[0] == _focusedDate.toString().split(" ")[0]){
+  Widget appointmentList(EventViewModel eventViewModel) {
+    List<Event> clientsOnDay = [];
+    for (Event event in clients){
+      if (event.date.split("T")[0] == _focusedDate.toString().split(" ")[0]){
         clientsOnDay.add(event);
       }
     }
@@ -111,9 +109,9 @@ class _MyHomePageState extends State<MyHomePage> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: Text(clientsOnDay[index].keys.first),
+                              title: Text(clientsOnDay[index].name),
                               content: Text(
-                                  "Location : ${(clientsOnDay[index].values.first).location}\nPayment : R${(clients[index].values.first).rand}\n${(clients[index].values.first).info}"),
+                                  "Location : ${clientsOnDay[index].location}\nPayment : R${clients[index].rand}\n${clients[index].info}"),
                               buttonPadding: const EdgeInsets.all(20),
                               actions: [
                                 TextButton(
@@ -123,6 +121,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: const Text("Close")),
                                 TextButton(
                                     onPressed: () {
+                                      eventViewModel.clearEventDB(userData: clientsOnDay[index]);
+                                      loadData();
                                       Navigator.of(context).pop();
                                     },
                                     child: const Text("Remove")),
@@ -164,15 +164,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
                 onDaySelected: (selectedDay, focusedDay) async {
                   if (!isSameDay(_selectedDate, selectedDay)) {
-                    print(selectedDay);
-
                     await eventViewModel.readDB();
-                    await eventViewModel.getClientNames();
                     setState(() {
                       _selectedDate = selectedDay;
                       _focusedDate = focusedDay;
                       clients = eventViewModel.organisedEvents;
-                      clientNames = eventViewModel.clientNames;
                     });
                   }
                 },
@@ -181,7 +177,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 eventLoader: (day) => clientDates.contains(day.toString().split(" ")[0]) ? [1] : [],
               ),
               const SizedBox(height: 10),
-              Expanded(child: appointmentList()),
+              Expanded(child: appointmentList(eventViewModel)),
               const SizedBox(height: 10),
             ],
           ),

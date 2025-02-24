@@ -6,27 +6,25 @@ class EventViewModel extends ChangeNotifier{
 
   final ClientDatabase clientDatabase = ClientDatabase.instance;
 
-  late List<Map<String,Event>> organisedEvents;
-  late List<String> clientNames;
+  late List<Event> organisedEvents;
 
-  Future<void> createDB({required String tableName}) async{
-    clientDatabase.initDatabase(tableName);
+  Future<void> createDB() async{
+    clientDatabase.initDatabase();
     notifyListeners();
   }
 
-  Future<void> writeDB({required String tableName,required Event userData}) async{
-    //TODO : error when adding a space or numbers to the name, sql doesn't allow that
-    clientDatabase.writeData(tableName, userData);
+  Future<void> writeDB({required Event userData}) async{
+    clientDatabase.writeData(userData);
     notifyListeners();
   }
 
-  Future<void> clearEventDB({required String tableName,required Event userData}) async{
-    clientDatabase.clearEvent(tableName, userData);
+  Future<void> clearEventDB({required Event userData}) async{
+    clientDatabase.clearEvent(userData);
     notifyListeners();
   }
 
-  Future<void> updateEventDB({required String tableName,required Event userData}) async{
-    clientDatabase.updateEvent(tableName, userData);
+  Future<void> updateEventDB({required Event userData}) async{
+    clientDatabase.updateEvent(userData);
     notifyListeners();
   }
 
@@ -37,11 +35,6 @@ class EventViewModel extends ChangeNotifier{
 
   Future<void> clearDB() async{
     clientDatabase.clearDatabase();
-    notifyListeners();
-  }
-
-  Future<void> getClientNames() async{
-    clientNames = await clientDatabase.getAllTableNames();
     notifyListeners();
   }
 
