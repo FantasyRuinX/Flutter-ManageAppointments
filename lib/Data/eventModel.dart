@@ -1,12 +1,14 @@
 
 class Event{
 
+  final String name;
   final String date;
   final String rand;
   final String info;
   final String location;
 
   Event({
+    required this.name,
     required this.date,
     required this.rand,
     required this.info,
@@ -14,7 +16,8 @@ class Event{
   });
 
   Event.fromJson(Map<String, dynamic> jsonMap) : this(
-    date : jsonMap['started'],
+    name : jsonMap['name'],
+    date : jsonMap['date'],
     rand : jsonMap['rand'],
     info : jsonMap['info'],
     location : jsonMap['location']
@@ -23,6 +26,7 @@ class Event{
   Map<String, Object?> toJson() {
     return {
       'id': hashCode.toInt(),
+      'name': name.toString(),
       'date': date.toString(),
       'rand': rand.toString(),
       'info': info.toString(),
@@ -33,13 +37,14 @@ class Event{
 
   @override
   String toString() {
-    return "$date : $info";
+    return "$name | $date : $info";
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     return other is Event &&
+        other.name == name &&
         other.date == date &&
         other.rand == rand &&
         other.info == info &&
@@ -47,6 +52,6 @@ class Event{
   }
 
   @override
-  int get hashCode => date.hashCode ^ rand.hashCode ^ info.hashCode;
+  int get hashCode => name.hashCode ^date.hashCode ^ rand.hashCode ^ info.hashCode;
 
 }
