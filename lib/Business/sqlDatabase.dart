@@ -63,13 +63,13 @@ class ClientDatabase {
   Future<void> clearEvent(Event data) async {
     final tempDB = await database;
 
-    await tempDB.delete(tableName, where : 'date = ? AND info = ?', whereArgs: [data.date,data.info]);
+    await tempDB.delete(tableName, where : 'id = ? AND date = ? AND info = ?', whereArgs: [data.id,data.date,data.info]);
   }
 
-  Future<void> updateEvent(Event newData) async {
+  Future<void> updateEvent(Event oldData,Event newData) async {
     final tempDB = await database;
 
-    await tempDB.update(tableName, newData.toJson(), where : 'date = ? AND info = ?', whereArgs: [newData.date,newData.info]);
+    await tempDB.update(tableName, newData.toJson(), where : 'id = ? AND date = ? AND info = ?', whereArgs: [oldData.id,oldData.date,oldData.info]);
   }
 
   Future<List<Event>> readData() async {
@@ -82,12 +82,12 @@ class ClientDatabase {
       userEvents.add(Event.fromJson(item));
     }
 
-    //Print info
-    print("----> Printing out all events : ${userEvents.length}");
-    // Print each table and its events
-    userEvents.forEach((Event item){
-      print(item);
-    });
+    // //Print info
+    // print("----> Printing out all events : ${userEvents.length}");
+    // // Print each table and its events
+    // userEvents.forEach((Event item){
+    //   print(item);
+    // });
 
     return userEvents;
   }

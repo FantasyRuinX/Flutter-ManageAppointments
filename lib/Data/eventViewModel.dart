@@ -23,8 +23,8 @@ class EventViewModel extends ChangeNotifier{
     notifyListeners();
   }
 
-  Future<void> updateEventDB({required Event userData}) async{
-    clientDatabase.updateEvent(userData);
+  Future<void> updateEventDB({required Event userDataOld,required Event userDataNew}) async{
+    clientDatabase.updateEvent(userDataOld,userDataNew);
     notifyListeners();
   }
 
