@@ -28,6 +28,8 @@ class ClientDatabase {
         CREATE TABLE $tableName (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
+        start TEXT NOT NULL,
+        end TEXT NOT NULL,
         date TEXT NOT NULL,
         rand TEXT NOT NULL,
         info TEXT NOT NULL,
@@ -40,6 +42,8 @@ class ClientDatabase {
         CREATE TABLE $tableName (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
+        start TEXT NOT NULL,
+        end TEXT NOT NULL,
         date TEXT NOT NULL,
         rand TEXT NOT NULL,
         info TEXT NOT NULL,
@@ -82,12 +86,12 @@ class ClientDatabase {
       userEvents.add(Event.fromJson(item));
     }
 
-    // //Print info
-    // print("----> Printing out all events : ${userEvents.length}");
-    // // Print each table and its events
-    // userEvents.forEach((Event item){
-    //   print(item);
-    // });
+    //Print info
+    print("----> Printing out all events : ${userEvents.length}");
+    // Print each table and its events
+    userEvents.forEach((Event item){
+      print(item);
+    });
 
     return userEvents;
   }

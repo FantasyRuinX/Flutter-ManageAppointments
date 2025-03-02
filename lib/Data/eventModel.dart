@@ -1,8 +1,8 @@
-
-class Event{
-
+class Event {
   final int id;
   final String name;
+  final String start;
+  final String end;
   final String date;
   final String rand;
   final String info;
@@ -11,25 +11,30 @@ class Event{
   Event({
     required this.id,
     required this.name,
+    required this.start,
+    required this.end,
     required this.date,
     required this.rand,
     required this.info,
     required this.location,
   });
 
-  Event.fromJson(Map<String, dynamic> jsonMap) : this(
-    id : jsonMap['id'],
-    name : jsonMap['name'],
-    date : jsonMap['date'],
-    rand : jsonMap['rand'],
-    info : jsonMap['info'],
-    location : jsonMap['location']
-  );
+  Event.fromJson(Map<String, dynamic> jsonMap)
+      : this(
+            id: jsonMap['id'],
+            start: jsonMap['start'],
+            end: jsonMap['end'],
+            name: jsonMap['name'],
+            date: jsonMap['date'],
+            rand: jsonMap['rand'],
+            info: jsonMap['info'],
+            location: jsonMap['location']);
 
   Map<String, Object?> toJson() {
     return {
-      'id': id.toString(),
       'name': name.toString(),
+      'start': date.toString(),
+      'end': date.toString(),
       'date': date.toString(),
       'rand': rand.toString(),
       'info': info.toString(),
@@ -37,10 +42,9 @@ class Event{
     };
   }
 
-
   @override
   String toString() {
-    return "$name | $date : $info";
+    return "$name ID $id | $date : $info";
   }
 
   @override
@@ -56,6 +60,11 @@ class Event{
   }
 
   @override
-  int get hashCode => id.hashCode ^ name.hashCode ^ date.hashCode ^ rand.hashCode ^ info.hashCode ^ location.hashCode;
-
+  int get hashCode =>
+      id.hashCode ^
+      name.hashCode ^
+      date.hashCode ^
+      rand.hashCode ^
+      info.hashCode ^
+      location.hashCode;
 }
