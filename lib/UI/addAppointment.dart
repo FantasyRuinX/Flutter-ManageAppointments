@@ -25,34 +25,70 @@ class _AddAppointmentState extends State<AddAppointment> {
   TextEditingController textControllerLocation = TextEditingController();
   TextEditingController textControllerAmount = TextEditingController();
   TextEditingController textControllerDescr = TextEditingController();
-  int amount = 0;
-  String clientName = "";
-  String location = "";
-  String description = "";
 
-  Event? updateEvent;
+  Event? currentEvent;
+  bool addedEvent = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final Map<String, dynamic> args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
+    final Map<String, dynamic> args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ??
+            {};
     setState(() {
-      updateEvent = args["updateEvent"] ?? null;
+      currentEvent = args["currentEvent"] ?? null;
+
+      if (currentEvent != null  && addedEvent == false) {
+        textControllerName.text = currentEvent!.name;
+        textControllerLocation.text = currentEvent!.location;
+        textControllerAmount.text = currentEvent!.rand;
+        textControllerDescr.text = currentEvent!.info;
+
+        List<String> startingTime = currentEvent!.start.split(":");
+        List<String> endingTime = currentEvent!.end.split(":");
+
+        selectedTime = TimeRange(
+            startTime: TimeOfDay(hour: int.parse(startingTime[0]), minute: int.parse(startingTime[1])),
+            endTime: TimeOfDay(hour: int.parse(endingTime[0]), minute: int.parse(endingTime[1])));
+
+        List<String> dates = currentEvent!.date.split("-");
+        selectedDate = DateTime(
+            int.parse(dates[0]), int.parse(dates[1]), int.parse(dates[2]));
+
+        addedEvent = true;
+      }
     });
-    print(args["updateEvent"]);
+
+    print("Loaded data : " + args["currentEvent"].toString());
   }
 
-  Future<void> addEvent(EventViewModel viewmodel, String name, String location, int amount, String descr, TimeOfDay time, DateTime date) async {
+  Future<void> addEvent(EventViewModel viewmodel) async {
     Event newEvent = Event(
         id: viewmodel.organisedEvents.length,
-        name: name,
-        start: selectedTime!.startTime.format(context),
-        end: selectedTime!.endTime.format(context),
+        name: textControllerName.text,
+        start: "${selectedTime!.startTime.hour}:${selectedTime!.startTime.minute.toString().padLeft(2, '0')}",
+        end: "${selectedTime!.endTime.hour}:${selectedTime!.endTime.minute.toString().padLeft(2, '0')}",
         date: DateFormat("yyyy-MM-dd").format(selectedDate!),
-        rand: amount.toString(),
-        info: descr,
-        location: location);
+        rand: textControllerAmount.text,
+        info: textControllerDescr.text,
+        location: textControllerLocation.text);
+
     await viewmodel.writeDB(userData: newEvent);
+  }
+
+  Future<void> updateEvent(EventViewModel viewmodel) async {
+    Event newEvent = Event(
+        id: viewmodel.organisedEvents.length,
+        name: textControllerName.text,
+        start: "${selectedTime!.startTime.hour}:${selectedTime!.startTime.minute.toString().padLeft(2, '0')}",
+        end: "${selectedTime!.endTime.hour}:${selectedTime!.endTime.minute.toString().padLeft(2, '0')}",
+        date: DateFormat("yyyy-MM-dd").format(selectedDate!),
+        rand: textControllerAmount.text,
+        info: textControllerDescr.text,
+        location: textControllerLocation.text);;
+
+    await viewmodel.updateEventDB(
+        userDataOld: currentEvent!, userDataNew: newEvent);
   }
 
   void setDuration() {
@@ -94,7 +130,6 @@ class _AddAppointmentState extends State<AddAppointment> {
 
   @override
   Widget build(BuildContext context) {
-
     return Consumer<EventViewModel>(builder: (context, eventViewModel, child) {
       return Scaffold(
         appBar: AppBar(
@@ -143,13 +178,18 @@ class _AddAppointmentState extends State<AddAppointment> {
                     onPressed: () async {
                       final TimeRange? timeRange = await showTimeRangePicker(
                           use24HourFormat: true,
-                          end: TimeOfDay.fromDateTime(
-                              DateTime.now().add(const Duration(hours: 1))),
+                          end: selectedTime?.endTime,
                           context: context);
+
+                      if (timeRange != null) {
+                        setState(() {
+                          selectedTime = timeRange;
+                        });
+                      }
                     },
                     child: Text(
                         textAlign: TextAlign.center,
-                        "Set Duration\n${selectedTime!.startTime.format(context)} - ${selectedTime!.endTime.format(context)}"),
+                        "Set Duration\n${selectedTime!.startTime.hour}:${selectedTime!.startTime.minute.toString().padLeft(2, '0')} - ${selectedTime!.endTime.hour}:${selectedTime!.endTime.minute.toString().padLeft(2, '0')}"),
                   ),
                   ElevatedButton(
                     onPressed: () async {
@@ -209,20 +249,12 @@ class _AddAppointmentState extends State<AddAppointment> {
                       child:
                           const Text(style: TextStyle(fontSize: 17), "Submit"),
                       onPressed: () {
-                        setState(() {
-                          clientName = textControllerName.text;
-                          location = textControllerLocation.text;
-                          amount = int.parse(textControllerAmount.text);
-                          description = textControllerDescr.text;
-                        });
-                        addEvent(
-                            eventViewModel,
-                            clientName,
-                            location,
-                            amount,
-                            description,
-                            selectedTime!.startTime,
-                            selectedDate!);
+                        if (currentEvent == null) {
+                          addEvent(eventViewModel);
+                        } else {
+                          updateEvent(eventViewModel);
+                        }
+
                         Navigator.of(context).pushNamed("/home");
                       })),
               SizedBox(

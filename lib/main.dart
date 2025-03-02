@@ -5,7 +5,6 @@ import 'package:Flutter_ManageAppointments/Data/eventViewModel.dart';
 import 'UI/home.dart';
 import 'UI/addAppointment.dart';
 import 'UI/listAppointment.dart';
-import 'UI/changeAppointment.dart';
 
 void main() {
   runApp(
@@ -30,9 +29,8 @@ class MyApp extends StatelessWidget {
       initialRoute: "/home",
       routes: {
         "/home" : (context) => const MyHomePage(title: 'Appointments'),
-        "/addAppointments" : (context) => const AddAppointment(title: 'Add appointments'),
+        "/addAppointments" : (context) => const AddAppointment(title: 'Manage appointments'),
         "/listAppointments" : (context) => const ListAppointment(title: 'List appointments'),
-        "/changeAppointments" : (context) => const ChangeAppointment(title: 'Change appointments'),
       },
 
     );
