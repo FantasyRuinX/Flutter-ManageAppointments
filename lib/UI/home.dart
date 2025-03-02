@@ -36,12 +36,12 @@ class _MyHomePageState extends State<MyHomePage> {
     final eventViewModel = Provider.of<EventViewModel>(context, listen: false);
     await eventViewModel.readDB();
     setState(() {
+      clientDates.clear();
       clients = eventViewModel.organisedEvents;
 
       for (Event event in clients){
-        clientDates.add(event.date.split("T")[0]);
+        clientDates.add(event.date);
       }
-    print("Loaded data");
     });
   }
 
@@ -80,8 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   String setOutputEventText(Event event) {
-    List<String> eventTime = event.date.split("T");
-    return "${event.name} at ${eventTime[1]}";
+    return "${event.name} at ${event.start}";
   }
 
   Widget appointmentList(EventViewModel eventViewModel) {
