@@ -82,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   String setOutputEventText(Event event) {
-    return "${event.name} at ${event.start}";
+    return "${event.name} at ${event.start} to ${event.end}";
   }
 
   Widget appointmentList(EventViewModel eventViewModel) {
@@ -130,6 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 TextButton(
                                     onPressed: () {
                                       Navigator.of(context).pop();
+                                      Navigator.pushNamed(context, "/addAppointments",arguments: <String,dynamic>{"currentEvent" : clientsOnDay[index]});
                                     },
                                     child: const Text("Change")),
                               ],
