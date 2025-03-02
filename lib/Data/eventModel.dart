@@ -33,8 +33,8 @@ class Event {
   Map<String, Object?> toJson() {
     return {
       'name': name.toString(),
-      'start': date.toString(),
-      'end': date.toString(),
+      'start': start.toString(),
+      'end': end.toString(),
       'date': date.toString(),
       'rand': rand.toString(),
       'info': info.toString(),
