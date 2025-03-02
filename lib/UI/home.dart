@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:Flutter_ManageAppointments/Data/eventViewModel.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import 'addAppointment.dart';
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -52,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       switch (_selectedItem) {
         case 0:
-          Navigator.pushNamed(context, "/addAppointments");
+          Navigator.pushNamed(context, "/addAppointments",arguments: <String,dynamic>{"updateEvent" : null});
           break;
         case 1:
           Navigator.pushNamed(context, "/listAppointments");

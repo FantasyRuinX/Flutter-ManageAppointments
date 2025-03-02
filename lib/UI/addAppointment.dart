@@ -30,8 +30,19 @@ class _AddAppointmentState extends State<AddAppointment> {
   String location = "";
   String description = "";
 
-  Future<void> addEvent(EventViewModel viewmodel, String name, String location,
-      int amount, String descr, TimeOfDay time, DateTime date) async {
+  Event? updateEvent;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final Map<String, dynamic> args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
+    setState(() {
+      updateEvent = args["updateEvent"] ?? null;
+    });
+    print(args["updateEvent"]);
+  }
+
+  Future<void> addEvent(EventViewModel viewmodel, String name, String location, int amount, String descr, TimeOfDay time, DateTime date) async {
     Event newEvent = Event(
         id: viewmodel.organisedEvents.length,
         name: name,
@@ -83,6 +94,7 @@ class _AddAppointmentState extends State<AddAppointment> {
 
   @override
   Widget build(BuildContext context) {
+
     return Consumer<EventViewModel>(builder: (context, eventViewModel, child) {
       return Scaffold(
         appBar: AppBar(
