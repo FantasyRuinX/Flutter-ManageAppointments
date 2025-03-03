@@ -125,7 +125,11 @@ class _ListAppointmentState extends State<ListAppointment> {
           body: Center(child : Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                const SizedBox(height: 40),
+                const SizedBox(height: 20),
+                const Text(
+                    style: TextStyle(fontSize: 17),
+                    "Please enter or click on client name"),
+                const SizedBox(height: 20),
                 SizedBox(
                     height: 50,
                     width: MediaQuery.sizeOf(context).width - 100,
@@ -151,7 +155,7 @@ class _ListAppointmentState extends State<ListAppointment> {
                     height: 200,
                     width: MediaQuery.sizeOf(context).width - 200,
                     child: Expanded(child: appointmentList(eventViewModel))),
-                const SizedBox(height: 125),
+                const SizedBox(height: 105),
                 SizedBox(
                     height: 50,
                     width: 200,
