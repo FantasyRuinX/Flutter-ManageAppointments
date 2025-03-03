@@ -60,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Navigator.pushNamed(context, "/listAppointments");
           break;
         case 2:
-          eventViewModel.clearDB();
+          //eventViewModel.clearDB();
           showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -188,8 +188,8 @@ class _MyHomePageState extends State<MyHomePage> {
               BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add"),
               BottomNavigationBarItem(
                   icon: Icon(Icons.person), label: "Clients"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.remove), label: "Clear database"),
+              //BottomNavigationBarItem(
+              //    icon: Icon(Icons.remove), label: "Clear database"),
             ],
             currentIndex: _selectedItem,
             onTap: (i) => setCurrentItem(context, eventViewModel, i),

@@ -178,6 +178,29 @@ class _AddAppointmentState extends State<AddAppointment> {
                     onPressed: () async {
                       final TimeRange? timeRange = await showTimeRangePicker(
                           use24HourFormat: true,
+                          strokeWidth: 4,
+                        labels: [
+                          "12 am",
+                          "3 am",
+                          "6 am",
+                          "9 am",
+                          "12 pm",
+                          "3 pm",
+                          "6 pm",
+                          "9 pm"
+                        ].asMap().entries.map((e) {
+                          return ClockLabel.fromIndex(
+                              idx: e.key, length: 8, text: e.value);
+                        }).toList(),
+                        labelOffset: -20,
+                        labelStyle: const TextStyle(
+                            fontSize: 15,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.bold),
+                          ticks: 24,
+                          ticksColor: Colors.grey,
+                          ticksOffset: -7,
+                          ticksLength: 15,
                           end: selectedTime?.endTime,
                           context: context);
 
