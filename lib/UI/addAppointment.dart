@@ -59,7 +59,6 @@ class _AddAppointmentState extends State<AddAppointment> {
       }
     });
 
-    print("Loaded data : " + args["currentEvent"].toString());
   }
 
   Future<void> addEvent(EventViewModel viewmodel) async {
@@ -89,43 +88,6 @@ class _AddAppointmentState extends State<AddAppointment> {
 
     await viewmodel.updateEventDB(
         userDataOld: currentEvent!, userDataNew: newEvent);
-  }
-
-  void setDuration() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text("Enter duration"),
-            content: Row(children: [
-              SizedBox(
-                  height: 50,
-                  width: 50,
-                  child: TextField(
-                      controller: textControllerAmount,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(
-                            vertical: 0.0,
-                            horizontal: 5.0,
-                          ),
-                          border: OutlineInputBorder(),
-                          hintText: "Enter payment amount")))
-            ]),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text("Cancel")),
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text("OK")),
-            ],
-          );
-        });
   }
 
   @override
