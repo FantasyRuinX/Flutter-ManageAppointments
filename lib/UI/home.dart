@@ -112,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             return AlertDialog(
                               title: Text(clientsOnDay[index].name),
                               content: Text(
-                                  "Location : ${clientsOnDay[index].location}\nPayment : R${clients[index].rand}\n${clients[index].info}"),
+                                  "Location : ${clientsOnDay[index].location}\nPayment : R${clientsOnDay[index].rand}\n${clientsOnDay[index].info}"),
                               buttonPadding: const EdgeInsets.all(20),
                               actions: [
                                 TextButton(

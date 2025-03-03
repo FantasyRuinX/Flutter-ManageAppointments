@@ -32,16 +32,63 @@ class _ListAppointmentState extends State<ListAppointment> {
     });
   }
 
-  Widget appointmentList() {
+  String setOutputEventText(Event event) {
+    return "${event.date} at ${event.start} to ${event.end}";
+  }
+
+  Widget appointmentList(EventViewModel eventViewModel) {
     List<Event> tempEvents = clientsData.where((item) => item.name == selectedClient).toList();
 
     return ListView.builder(
+      padding: const EdgeInsets.all(8),
       itemCount: tempEvents.length,
-      itemBuilder: (BuildContext context,int index) {
-        print("Show client $selectedClient appointments current client is ${tempEvents[index]} and index is $index");
-          return Text(tempEvents[index].toString());
+      itemBuilder: (BuildContext context, int index) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 10,
+          children: <Widget>[
+            TextButton(
+                style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(
+                        Theme.of(context).colorScheme.inversePrimary)),
+                onPressed: () => setState(() {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text(tempEvents[index].name),
+                          content: Text(
+                              "Location : ${tempEvents[index].location}\nPayment : R${tempEvents[index].rand}\n${tempEvents[index].info}"),
+                          buttonPadding: const EdgeInsets.all(20),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text("Close")),
+                            TextButton(
+                                onPressed: () {
+                                  eventViewModel.clearEventDB(userData: tempEvents[index]);
+                                  loadClients();
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text("Remove")),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  Navigator.pushNamed(context, "/addAppointments",arguments: <String,dynamic>{"currentEvent" : tempEvents[index]});
+                                },
+                                child: const Text("Change")),
+                          ],
+                        );
+                      });
+                }),
+                child: Text(setOutputEventText(tempEvents[index])))
+          ],
+        );
+      },
+    );
 
-    },);
   }
 
 
@@ -92,7 +139,7 @@ class _ListAppointmentState extends State<ListAppointment> {
                 SizedBox(
                     height: 200,
                     width: MediaQuery.sizeOf(context).width - 200,
-                    child: Expanded(child: appointmentList())),
+                    child: Expanded(child: appointmentList(eventViewModel))),
                 SizedBox(
                     height: 50,
                     width: 200,
