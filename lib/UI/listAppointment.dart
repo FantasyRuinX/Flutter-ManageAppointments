@@ -16,6 +16,7 @@ class ListAppointment extends StatefulWidget {
 class _ListAppointmentState extends State<ListAppointment> {
   TextEditingController txtClientName = TextEditingController();
   List<Event> clientsData = [];
+  List<String> clientNameList = [];
   String selectedClient = "";
 
   @override
@@ -29,6 +30,11 @@ class _ListAppointmentState extends State<ListAppointment> {
     await eventViewModel.readDB();
     setState(() {
       clientsData= eventViewModel.organisedEvents;
+      
+      for (int index = 0;index < clientsData.length;index++){
+        clientNameList.add(clientsData[index].name);
+      }
+      
     });
   }
 
@@ -91,8 +97,6 @@ class _ListAppointmentState extends State<ListAppointment> {
 
   }
 
-
-
   Widget appointmentNameList() {
     return ListView.builder(
       padding: const EdgeInsets.all(8),
@@ -121,12 +125,19 @@ class _ListAppointmentState extends State<ListAppointment> {
           body: Center(child : Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                const SizedBox(height: 25),
+                const SizedBox(height: 40),
                 SizedBox(
                     height: 50,
                     width: MediaQuery.sizeOf(context).width - 100,
                     child: TextField(
                         controller: txtClientName,
+                        onSubmitted: (value){
+                              setState(() {
+                                if (clientNameList.contains(txtClientName.text)) {
+                                  selectedClient = txtClientName.text;
+                                }
+                              });
+                        },
                         decoration: const InputDecoration(
                             contentPadding: EdgeInsets.symmetric(
                                 vertical: 0.0, horizontal: 5.0),
@@ -140,6 +151,7 @@ class _ListAppointmentState extends State<ListAppointment> {
                     height: 200,
                     width: MediaQuery.sizeOf(context).width - 200,
                     child: Expanded(child: appointmentList(eventViewModel))),
+                const SizedBox(height: 125),
                 SizedBox(
                     height: 50,
                     width: 200,
@@ -148,11 +160,7 @@ class _ListAppointmentState extends State<ListAppointment> {
                             const Text(style: TextStyle(fontSize: 17), "Back"),
                         onPressed: () {
                           Navigator.of(context).pushNamed("/home");
-                        })),
-                const SizedBox(
-                  height: 50,
-                  width: 200,
-                )
+                        }))
               ])));
     });
   }
