@@ -47,10 +47,10 @@ class _ListAppointmentState extends State<ListAppointment> {
           child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                SizedBox(height: 20),
-                Text(style: TextStyle(fontSize: 17), "No Client Data"),
-                SizedBox(height: 20)
-              ]));
+            SizedBox(height: 20),
+            Text(style: TextStyle(fontSize: 17), "No Client Data"),
+            SizedBox(height: 20)
+          ]));
     }
 
     List<Event> tempEvents =
@@ -221,15 +221,17 @@ class _ListAppointmentState extends State<ListAppointment> {
                             border: OutlineInputBorder(),
                             hintText: "Enter Client Name"))),
                 //Not showing on phone?
-                SizedBox(
-                    height: 200,
-                    width: MediaQuery.sizeOf(context).width - 150,
-                    child: Expanded(child: appointmentNameList())),
-                // SizedBox(
-                //     height: 210,
-                //     width: MediaQuery.sizeOf(context).width - 150,
-                //     child: Expanded(child: appointmentList(eventViewModel))),
-                // const SizedBox(height: 105),
+                Expanded(
+                    child: SizedBox(
+                        height: 200,
+                        width: MediaQuery.sizeOf(context).width - 150,
+                        child: appointmentNameList())),
+                Expanded(
+                    child: SizedBox(
+                        height: 200,
+                        width: MediaQuery.sizeOf(context).width - 150,
+                        child: appointmentList(eventViewModel))),
+                const SizedBox(height: 20),
                 SizedBox(
                     height: 50,
                     width: 200,
@@ -238,7 +240,8 @@ class _ListAppointmentState extends State<ListAppointment> {
                             const Text(style: TextStyle(fontSize: 17), "Back"),
                         onPressed: () {
                           Navigator.of(context).pushNamed("/home");
-                        }))
+                        })),
+                    const SizedBox(height: 125),
               ])));
     });
   }
