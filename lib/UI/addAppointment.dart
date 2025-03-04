@@ -16,9 +16,9 @@ class AddAppointment extends StatefulWidget {
 }
 
 class _AddAppointmentState extends State<AddAppointment> {
-  TimeRange? selectedTime = TimeRange(
-      startTime: TimeOfDay.now(),
-      endTime: TimeOfDay.fromDateTime(DateTime.now().add(Duration(hours: 1))));
+
+  TimeOfDay selectedTimeStart = TimeOfDay.now();
+  TimeOfDay selectedTimeEnd = TimeOfDay.fromDateTime(DateTime.now().add(Duration(hours: 1)));
   DateTime? selectedDate = DateTime.now();
 
   TextEditingController textControllerName = TextEditingController();
@@ -52,13 +52,12 @@ class _AddAppointmentState extends State<AddAppointment> {
         List<String> startingTime = currentEvent!.start.split(":");
         List<String> endingTime = currentEvent!.end.split(":");
 
-        selectedTime = TimeRange(
-            startTime: TimeOfDay(
+        selectedTimeStart = TimeOfDay(
                 hour: int.parse(startingTime[0]),
-                minute: int.parse(startingTime[1])),
-            endTime: TimeOfDay(
+                minute: int.parse(startingTime[1]));
+      selectedTimeEnd =  TimeOfDay(
                 hour: int.parse(endingTime[0]),
-                minute: int.parse(endingTime[1])));
+                minute: int.parse(endingTime[1]));
 
         List<String> dates = currentEvent!.date.split("-");
         selectedDate = DateTime(
@@ -82,9 +81,9 @@ class _AddAppointmentState extends State<AddAppointment> {
         id: viewmodel.organisedEvents.length,
         name: textControllerName.text,
         start:
-            "${selectedTime!.startTime.hour}:${selectedTime!.startTime.minute.toString().padLeft(2, '0')}",
+            "${selectedTimeStart.hour}:${selectedTimeStart.minute.toString().padLeft(2, '0')}",
         end:
-            "${selectedTime!.endTime.hour}:${selectedTime!.endTime.minute.toString().padLeft(2, '0')}",
+            "${selectedTimeEnd.hour}:${selectedTimeEnd.minute.toString().padLeft(2, '0')}",
         date: DateFormat("yyyy-MM-dd").format(selectedDate!),
         rand: textControllerAmount.text,
         info: textControllerDescr.text,
@@ -99,9 +98,9 @@ class _AddAppointmentState extends State<AddAppointment> {
         id: viewmodel.organisedEvents.length,
         name: textControllerName.text,
         start:
-            "${selectedTime!.startTime.hour}:${selectedTime!.startTime.minute.toString().padLeft(2, '0')}",
+            "${selectedTimeStart.hour}:${selectedTimeStart.minute.toString().padLeft(2, '0')}",
         end:
-            "${selectedTime!.endTime.hour}:${selectedTime!.endTime.minute.toString().padLeft(2, '0')}",
+            "${selectedTimeEnd.hour}:${selectedTimeEnd.minute.toString().padLeft(2, '0')}",
         date: DateFormat("yyyy-MM-dd").format(selectedDate!),
         rand: textControllerAmount.text,
         info: textControllerDescr.text,
@@ -187,43 +186,37 @@ class _AddAppointmentState extends State<AddAppointment> {
                 children: <Widget>[
                   ElevatedButton(
                     onPressed: () async {
-                      final TimeRange? timeRange = await showTimeRangePicker(
-                          use24HourFormat: true,
-                          strokeWidth: 4,
-                          labels: [
-                            "12 am",
-                            "3 am",
-                            "6 am",
-                            "9 am",
-                            "12 pm",
-                            "3 pm",
-                            "6 pm",
-                            "9 pm"
-                          ].asMap().entries.map((e) {
-                            return ClockLabel.fromIndex(
-                                idx: e.key, length: 8, text: e.value);
-                          }).toList(),
-                          labelOffset: -20,
-                          labelStyle: const TextStyle(
-                              fontSize: 15,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold),
-                          ticks: 24,
-                          ticksColor: Colors.grey,
-                          ticksOffset: -7,
-                          ticksLength: 15,
-                          end: selectedTime?.endTime,
-                          context: context);
 
-                      if (timeRange != null) {
-                        setState(() {
-                          selectedTime = timeRange;
-                        });
-                      }
+                      selectedTimeStart = (await showTimePicker(
+                        context: context,
+                        initialTime: selectedTimeStart ,
+                        helpText: "Appointment will start at : ",
+                        initialEntryMode: TimePickerEntryMode.inputOnly,
+                        builder: (BuildContext context, Widget? child) {
+                          return MediaQuery(
+                            data: MediaQuery.of(context)
+                                .copyWith(alwaysUse24HourFormat: true),
+                            child: child!,
+                          );
+                        },
+                      ))!;
+                      selectedTimeEnd = (await showTimePicker(
+                        context: context,
+                        initialTime: selectedTimeEnd,
+                        helpText: "Appointment will end at : ",
+                        initialEntryMode: TimePickerEntryMode.inputOnly,
+                        builder: (BuildContext context, Widget? child) {
+                          return MediaQuery(
+                            data: MediaQuery.of(context)
+                                .copyWith(alwaysUse24HourFormat: true),
+                            child: child!,
+                          );
+                        },
+                      ))!;
                     },
                     child: Text(
                         textAlign: TextAlign.center,
-                        "Set Duration\n${selectedTime!.startTime.hour}:${selectedTime!.startTime.minute.toString().padLeft(2, '0')} - ${selectedTime!.endTime.hour}:${selectedTime!.endTime.minute.toString().padLeft(2, '0')}"),
+                        "Set Duration\n${selectedTimeStart.hour}:${selectedTimeStart.minute.toString().padLeft(2, '0')} - ${selectedTimeEnd.hour}:${selectedTimeEnd.minute.toString().padLeft(2, '0')}"),
                   ),
                   ElevatedButton(
                     onPressed: () async {
