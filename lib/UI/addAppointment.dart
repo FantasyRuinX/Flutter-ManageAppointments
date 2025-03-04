@@ -27,18 +27,23 @@ class _AddAppointmentState extends State<AddAppointment> {
   TextEditingController textControllerDescr = TextEditingController();
 
   Event? currentEvent;
+  List<Event> allEvents = [];
   bool addedEvent = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
     final Map<String, dynamic> args =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ??
             {};
+
+    loadData();
+
     setState(() {
       currentEvent = args["currentEvent"] ?? null;
 
-      if (currentEvent != null  && addedEvent == false) {
+      if (currentEvent != null && addedEvent == false) {
         textControllerName.text = currentEvent!.name;
         textControllerLocation.text = currentEvent!.location;
         textControllerAmount.text = currentEvent!.rand;
@@ -48,8 +53,12 @@ class _AddAppointmentState extends State<AddAppointment> {
         List<String> endingTime = currentEvent!.end.split(":");
 
         selectedTime = TimeRange(
-            startTime: TimeOfDay(hour: int.parse(startingTime[0]), minute: int.parse(startingTime[1])),
-            endTime: TimeOfDay(hour: int.parse(endingTime[0]), minute: int.parse(endingTime[1])));
+            startTime: TimeOfDay(
+                hour: int.parse(startingTime[0]),
+                minute: int.parse(startingTime[1])),
+            endTime: TimeOfDay(
+                hour: int.parse(endingTime[0]),
+                minute: int.parse(endingTime[1])));
 
         List<String> dates = currentEvent!.date.split("-");
         selectedDate = DateTime(
@@ -58,20 +67,30 @@ class _AddAppointmentState extends State<AddAppointment> {
         addedEvent = true;
       }
     });
+  }
 
+  Future<void> loadData() async {
+    final eventViewModel = Provider.of<EventViewModel>(context, listen: false);
+    await eventViewModel.readDB();
+    setState(() {
+      allEvents = eventViewModel.organisedEvents;
+    });
   }
 
   Future<void> addEvent(EventViewModel viewmodel) async {
     Event newEvent = Event(
         id: viewmodel.organisedEvents.length,
         name: textControllerName.text,
-        start: "${selectedTime!.startTime.hour}:${selectedTime!.startTime.minute.toString().padLeft(2, '0')}",
-        end: "${selectedTime!.endTime.hour}:${selectedTime!.endTime.minute.toString().padLeft(2, '0')}",
+        start:
+            "${selectedTime!.startTime.hour}:${selectedTime!.startTime.minute.toString().padLeft(2, '0')}",
+        end:
+            "${selectedTime!.endTime.hour}:${selectedTime!.endTime.minute.toString().padLeft(2, '0')}",
         date: DateFormat("yyyy-MM-dd").format(selectedDate!),
         rand: textControllerAmount.text,
         info: textControllerDescr.text,
         location: textControllerLocation.text);
 
+    overlappingMessage(viewmodel, newEvent);
     await viewmodel.writeDB(userData: newEvent);
   }
 
@@ -79,15 +98,45 @@ class _AddAppointmentState extends State<AddAppointment> {
     Event newEvent = Event(
         id: viewmodel.organisedEvents.length,
         name: textControllerName.text,
-        start: "${selectedTime!.startTime.hour}:${selectedTime!.startTime.minute.toString().padLeft(2, '0')}",
-        end: "${selectedTime!.endTime.hour}:${selectedTime!.endTime.minute.toString().padLeft(2, '0')}",
+        start:
+            "${selectedTime!.startTime.hour}:${selectedTime!.startTime.minute.toString().padLeft(2, '0')}",
+        end:
+            "${selectedTime!.endTime.hour}:${selectedTime!.endTime.minute.toString().padLeft(2, '0')}",
         date: DateFormat("yyyy-MM-dd").format(selectedDate!),
         rand: textControllerAmount.text,
         info: textControllerDescr.text,
-        location: textControllerLocation.text);;
+        location: textControllerLocation.text);
 
+    overlappingMessage(viewmodel, newEvent);
     await viewmodel.updateEventDB(
         userDataOld: currentEvent!, userDataNew: newEvent);
+  }
+
+  Future<void> overlappingMessage(EventViewModel viewmodel, userEvent) async {
+    List<Event> overlappingEvents = await viewmodel.overlappingEventTime(
+        userDataNew: userEvent); //Testing purposes
+    String overlappingOutput = "";
+
+    for (Event item in overlappingEvents) {
+      overlappingOutput += "${item.name} from ${item.start} to ${item.end} \n";
+    }
+
+    if (overlappingEvents.isNotEmpty) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+                title: const Text("Overlapping Events"),
+                content: Text(overlappingOutput),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text("Close"))
+                ]);
+          });
+    }
   }
 
   @override
@@ -141,24 +190,24 @@ class _AddAppointmentState extends State<AddAppointment> {
                       final TimeRange? timeRange = await showTimeRangePicker(
                           use24HourFormat: true,
                           strokeWidth: 4,
-                        labels: [
-                          "12 am",
-                          "3 am",
-                          "6 am",
-                          "9 am",
-                          "12 pm",
-                          "3 pm",
-                          "6 pm",
-                          "9 pm"
-                        ].asMap().entries.map((e) {
-                          return ClockLabel.fromIndex(
-                              idx: e.key, length: 8, text: e.value);
-                        }).toList(),
-                        labelOffset: -20,
-                        labelStyle: const TextStyle(
-                            fontSize: 15,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.bold),
+                          labels: [
+                            "12 am",
+                            "3 am",
+                            "6 am",
+                            "9 am",
+                            "12 pm",
+                            "3 pm",
+                            "6 pm",
+                            "9 pm"
+                          ].asMap().entries.map((e) {
+                            return ClockLabel.fromIndex(
+                                idx: e.key, length: 8, text: e.value);
+                          }).toList(),
+                          labelOffset: -20,
+                          labelStyle: const TextStyle(
+                              fontSize: 15,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold),
                           ticks: 24,
                           ticksColor: Colors.grey,
                           ticksOffset: -7,

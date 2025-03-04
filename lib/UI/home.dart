@@ -4,8 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:Flutter_ManageAppointments/Data/eventViewModel.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import 'addAppointment.dart';
-
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -41,7 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
       clientDates.clear();
       clients = eventViewModel.organisedEvents;
 
-      for (Event event in clients){
+      for (Event event in clients) {
         clientDates.add(event.date);
       }
     });
@@ -54,7 +52,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
       switch (_selectedItem) {
         case 0:
-          Navigator.pushNamed(context, "/addAppointments",arguments: <String,dynamic>{"updateEvent" : null});
+          Navigator.pushNamed(context, "/addAppointments",
+              arguments: <String, dynamic>{"updateEvent": null});
           break;
         case 1:
           Navigator.pushNamed(context, "/listAppointments");
@@ -87,8 +86,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget appointmentList(EventViewModel eventViewModel) {
     List<Event> clientsOnDay = [];
-    for (Event event in clients){
-      if (event.date.split("T")[0] == _focusedDate.toString().split(" ")[0]){
+    for (Event event in clients) {
+      if (event.date.split("T")[0] == _focusedDate.toString().split(" ")[0]) {
         clientsOnDay.add(event);
       }
     }
@@ -122,15 +121,50 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: const Text("Close")),
                                 TextButton(
                                     onPressed: () {
-                                      eventViewModel.clearEventDB(userData: clientsOnDay[index]);
-                                      loadData();
-                                      Navigator.of(context).pop();
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                                title: const Text(
+                                                    "Removing Event"),
+                                                content: const Text(
+                                                    "Are you sure you want to remove this event?"),
+                                                buttonPadding: const EdgeInsets.all(50),
+                                                actionsAlignment: MainAxisAlignment.center,
+                                                actions: [
+                                                  TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                    style: const ButtonStyle(textStyle: WidgetStatePropertyAll(TextStyle(fontSize: 20))),
+                                                    child: const Text("No"),
+                                                  ),
+                                                  TextButton(
+                                                      onPressed: () {
+                                                        eventViewModel
+                                                            .clearEventDB(
+                                                                userData:
+                                                                    clientsOnDay[
+                                                                        index]);
+                                                        loadData();
+                                                        Navigator.of(context).pop();
+                                                        Navigator.of(context).pop();
+                                                      },
+                                                      style: const ButtonStyle(textStyle: WidgetStatePropertyAll(TextStyle(fontSize: 20))),
+                                                      child: const Text("Yes"))
+                                                ]);
+                                          });
                                     },
                                     child: const Text("Remove")),
                                 TextButton(
                                     onPressed: () {
                                       Navigator.of(context).pop();
-                                      Navigator.pushNamed(context, "/addAppointments",arguments: <String,dynamic>{"currentEvent" : clientsOnDay[index]});
+                                      Navigator.pushNamed(
+                                          context, "/addAppointments",
+                                          arguments: <String, dynamic>{
+                                            "currentEvent": clientsOnDay[index]
+                                          });
                                     },
                                     child: const Text("Change")),
                               ],
@@ -160,6 +194,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 focusedDay: _focusedDate,
                 firstDay: DateTime.utc(2001, 1, 1),
                 lastDay: DateTime.utc(2050, 1, 1),
+                headerStyle: const HeaderStyle(
+                    titleCentered: true, formatButtonVisible: false),
 
                 //Show selected date
                 selectedDayPredicate: (day) => isSameDay(_selectedDate, day),
@@ -176,7 +212,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 //----------------
 
-                eventLoader: (day) => clientDates.contains(day.toString().split(" ")[0]) ? [1] : [],
+                eventLoader: (day) =>
+                    clientDates.contains(day.toString().split(" ")[0])
+                        ? [1]
+                        : [],
               ),
               const SizedBox(height: 10),
               Expanded(child: appointmentList(eventViewModel)),
