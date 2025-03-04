@@ -86,13 +86,6 @@ class ClientDatabase {
       userEvents.add(Event.fromJson(item));
     }
 
-    //Print info
-    print("----> Printing out all events : ${userEvents.length}");
-    // Print each table and its events
-    userEvents.forEach((Event item){
-      print(item);
-    });
-
     return userEvents;
   }
 
