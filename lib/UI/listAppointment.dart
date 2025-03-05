@@ -32,7 +32,8 @@ class _ListAppointmentState extends State<ListAppointment> {
       clientsData = eventViewModel.organisedEvents;
 
       for (int index = 0; index < clientsData.length; index++) {
-        clientNameList.add(clientsData[index].name);
+        if (!clientNameList.contains(clientsData[index].name))
+        {clientNameList.add(clientsData[index].name);}
       }
     });
   }
@@ -78,73 +79,99 @@ class _ListAppointmentState extends State<ListAppointment> {
                                   "Location : ${tempEvents[index].location}\nPayment : R${tempEvents[index].rand}\n${tempEvents[index].info}"),
                               buttonPadding: const EdgeInsets.all(20),
                               actions: [
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text("Close")),
-                                TextButton(
-                                    onPressed: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                                title: const Text(
-                                                    "Removing Event"),
-                                                content: const Text(
-                                                    "Are you sure you want to remove this event?"),
-                                                buttonPadding:
-                                                    const EdgeInsets.all(50),
-                                                actionsAlignment:
-                                                    MainAxisAlignment.center,
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                    style: const ButtonStyle(
-                                                        textStyle:
-                                                            WidgetStatePropertyAll(
-                                                                TextStyle(
-                                                                    fontSize:
-                                                                        20))),
-                                                    child: const Text("No"),
-                                                  ),
-                                                  TextButton(
-                                                      onPressed: () {
-                                                        eventViewModel
-                                                            .clearEventDB(
-                                                                userData:
-                                                                    tempEvents[
-                                                                        index]);
-                                                        loadClients();
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                      style: const ButtonStyle(
-                                                          textStyle:
-                                                              WidgetStatePropertyAll(
+                                Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text("Close")),
+                                      TextButton(
+                                          onPressed: () {
+                                            showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return AlertDialog(
+                                                      title: const Text(
+                                                          "Removing Event"),
+                                                      content: const Text(
+                                                          "Are you sure you want to remove this event?"),
+                                                      buttonPadding:
+                                                      const EdgeInsets.all(
+                                                          25),
+                                                      actionsOverflowButtonSpacing:
+                                                      1000,
+                                                      actionsAlignment:
+                                                      MainAxisAlignment
+                                                          .center,
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                context)
+                                                                .pop();
+                                                          },
+                                                          style: const ButtonStyle(
+                                                              textStyle: WidgetStatePropertyAll(
                                                                   TextStyle(
                                                                       fontSize:
-                                                                          20))),
-                                                      child: const Text("Yes"))
-                                                ]);
-                                          });
-                                    },
-                                    child: const Text("Remove")),
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                      Navigator.pushNamed(
-                                          context, "/addAppointments",
-                                          arguments: <String, dynamic>{
-                                            "currentEvent": tempEvents[index]
-                                          });
-                                    },
-                                    child: const Text("Change")),
+                                                                      20))),
+                                                          child:
+                                                          const Text("No"),
+                                                        ),
+                                                        TextButton(
+                                                            onPressed: () {
+                                                              eventViewModel
+                                                                  .clearEventDB(
+                                                                  userData:
+                                                                  tempEvents[
+                                                                  index]);
+                                                              loadClients();
+                                                              Navigator.of(
+                                                                  context)
+                                                                  .pop();
+                                                              Navigator.of(
+                                                                  context)
+                                                                  .pop();
+                                                            },
+                                                            style: const ButtonStyle(
+                                                                textStyle: WidgetStatePropertyAll(
+                                                                    TextStyle(
+                                                                        fontSize:
+                                                                        20))),
+                                                            child: const Text(
+                                                                "Yes"))
+                                                      ]);
+                                                });
+                                          },
+                                          child: const Text("Remove")),
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                            Navigator.pushNamed(
+                                                context, "/addAppointments",
+                                                arguments: <String, dynamic>{
+                                                  "currentEvent":
+                                                  tempEvents[index],
+                                                  "updateCurrentEvent": true
+                                                });
+                                          },
+                                          child: const Text("Change")),
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                            Navigator.pushNamed(
+                                                context, "/addAppointments",
+                                                arguments: <String, dynamic>{
+                                                  "currentEvent":
+                                                  tempEvents[index],
+                                                  "updateCurrentEvent": false
+                                                });
+                                          },
+                                          child: const Text("Copy")),
+                                    ])
                               ],
                             );
                           });
@@ -170,16 +197,16 @@ class _ListAppointmentState extends State<ListAppointment> {
 
     return ListView.builder(
       padding: const EdgeInsets.all(8),
-      itemCount: clientsData.length,
+      itemCount: clientNameList.length,
       itemBuilder: (BuildContext context, int index) {
         return TextButton(
             style: ButtonStyle(
                 backgroundColor: WidgetStateProperty.all(
                     Theme.of(context).colorScheme.inversePrimary)),
             onPressed: () => setState(() {
-                  selectedClient = clientsData[index].name;
+                  selectedClient = clientNameList[index];
                 }),
-            child: Text(clientsData[index].name));
+            child: Text(clientNameList[index]));
       },
     );
   }
@@ -220,7 +247,7 @@ class _ListAppointmentState extends State<ListAppointment> {
                                 vertical: 0.0, horizontal: 5.0),
                             border: OutlineInputBorder(),
                             hintText: "Enter Client Name"))),
-                //Not showing on phone?
+
                 Expanded(
                     child: SizedBox(
                         height: 200,

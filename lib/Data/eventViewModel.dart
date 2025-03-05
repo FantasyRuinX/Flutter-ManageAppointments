@@ -40,19 +40,20 @@ class EventViewModel extends ChangeNotifier{
     for (Event item in organisedEvents){
       if (item.date == userDataNew.date){
 
-        print("Event in date");
-
         List<String> itemTime0 = item.start.split(":");
         List<String> itemTime1 = item.end.split(":");
         TimeOfDay itemTimeStart = TimeOfDay(hour: int.parse(itemTime0[0]), minute: int.parse(itemTime0[1]));
         TimeOfDay itemTimeEnd = TimeOfDay(hour: int.parse(itemTime1[0]), minute: int.parse(itemTime1[1]));
 
+        if (!currentTimeStart.isAtSameTimeAs(itemTimeStart) && !currentTimeEnd.isAtSameTimeAs(itemTimeEnd)){
         if (currentTimeStart.isAfter(itemTimeStart) && currentTimeEnd.isBefore(itemTimeEnd)) {//In range of time
           overlappingEvents.add(item);
-          }
+          }}
+
         if (currentTimeStart.isBefore(itemTimeStart) && currentTimeEnd.isAfter(itemTimeStart)) {//Start is out range but End is in range
           overlappingEvents.add(item);
           }
+
         if (currentTimeStart.isAfter(itemTimeStart) && currentTimeEnd.isAfter(itemTimeEnd)) {//Start is in range but End is out range
           overlappingEvents.add(item);
         }
@@ -60,7 +61,6 @@ class EventViewModel extends ChangeNotifier{
       }
     }
 
-    print("Time is overlapping with ${overlappingEvents.length} events");
     return overlappingEvents;
   }
 
