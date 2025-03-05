@@ -45,7 +45,8 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void setCurrentItem(BuildContext context, EventViewModel eventViewModel, int index) {
+  void setCurrentItem(
+      BuildContext context, EventViewModel eventViewModel, int index) {
     //Show Dialog variables
     setState(() {
       _selectedItem = index;
@@ -57,24 +58,6 @@ class _MyHomePageState extends State<MyHomePage> {
           break;
         case 1:
           Navigator.pushNamed(context, "/listAppointments");
-          break;
-        case 2:
-          //eventViewModel.clearDB();
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  content: const Text("All data cleared"),
-                  actions: [
-                    TextButton(
-                        onPressed: () {
-                          loadData();
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text("Close")),
-                  ],
-                );
-              });
           break;
       }
     });
@@ -112,61 +95,100 @@ class _MyHomePageState extends State<MyHomePage> {
                               title: Text(clientsOnDay[index].name),
                               content: Text(
                                   "Location : ${clientsOnDay[index].location}\nPayment : R${clientsOnDay[index].rand}\n${clientsOnDay[index].info}"),
-                              buttonPadding: const EdgeInsets.all(20),
                               actions: [
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text("Close")),
-                                TextButton(
-                                    onPressed: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                                title: const Text(
-                                                    "Removing Event"),
-                                                content: const Text(
-                                                    "Are you sure you want to remove this event?"),
-                                                buttonPadding: const EdgeInsets.all(50),
-                                                actionsAlignment: MainAxisAlignment.center,
-                                                actions: [
-                                                  TextButton(
-                                                      onPressed: () {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                    style: const ButtonStyle(textStyle: WidgetStatePropertyAll(TextStyle(fontSize: 20))),
-                                                    child: const Text("No"),
-                                                  ),
-                                                  TextButton(
-                                                      onPressed: () {
-                                                        eventViewModel
-                                                            .clearEventDB(
-                                                                userData:
-                                                                    clientsOnDay[
-                                                                        index]);
-                                                        loadData();
-                                                        Navigator.of(context).pop();
-                                                        Navigator.of(context).pop();
-                                                      },
-                                                      style: const ButtonStyle(textStyle: WidgetStatePropertyAll(TextStyle(fontSize: 20))),
-                                                      child: const Text("Yes"))
-                                                ]);
-                                          });
-                                    },
-                                    child: const Text("Remove")),
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                      Navigator.pushNamed(
-                                          context, "/addAppointments",
-                                          arguments: <String, dynamic>{
-                                            "currentEvent": clientsOnDay[index]
-                                          });
-                                    },
-                                    child: const Text("Change")),
+                                Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text("Close")),
+                                      TextButton(
+                                          onPressed: () {
+                                            showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return AlertDialog(
+                                                      title: const Text(
+                                                          "Removing Event"),
+                                                      content: const Text(
+                                                          "Are you sure you want to remove this event?"),
+                                                      buttonPadding:
+                                                          const EdgeInsets.all(
+                                                              25),
+                                                      actionsOverflowButtonSpacing:
+                                                          1000,
+                                                      actionsAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                          style: const ButtonStyle(
+                                                              textStyle: WidgetStatePropertyAll(
+                                                                  TextStyle(
+                                                                      fontSize:
+                                                                          20))),
+                                                          child:
+                                                              const Text("No"),
+                                                        ),
+                                                        TextButton(
+                                                            onPressed: () {
+                                                              eventViewModel
+                                                                  .clearEventDB(
+                                                                      userData:
+                                                                          clientsOnDay[
+                                                                              index]);
+                                                              loadData();
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                            },
+                                                            style: const ButtonStyle(
+                                                                textStyle: WidgetStatePropertyAll(
+                                                                    TextStyle(
+                                                                        fontSize:
+                                                                            20))),
+                                                            child: const Text(
+                                                                "Yes"))
+                                                      ]);
+                                                });
+                                          },
+                                          child: const Text("Remove")),
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                            Navigator.pushNamed(
+                                                context, "/addAppointments",
+                                                arguments: <String, dynamic>{
+                                                  "currentEvent":
+                                                      clientsOnDay[index],
+                                                  "updateCurrentEvent": true
+                                                });
+                                          },
+                                          child: const Text("Change")),
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                            Navigator.pushNamed(
+                                                context, "/addAppointments",
+                                                arguments: <String, dynamic>{
+                                                  "currentEvent":
+                                                      clientsOnDay[index],
+                                                  "updateCurrentEvent": false
+                                                });
+                                          },
+                                          child: const Text("Copy")),
+                                    ])
                               ],
                             );
                           });
@@ -227,8 +249,6 @@ class _MyHomePageState extends State<MyHomePage> {
               BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add"),
               BottomNavigationBarItem(
                   icon: Icon(Icons.person), label: "Clients"),
-              //BottomNavigationBarItem(
-              //    icon: Icon(Icons.remove), label: "Clear database"),
             ],
             currentIndex: _selectedItem,
             onTap: (i) => setCurrentItem(context, eventViewModel, i),

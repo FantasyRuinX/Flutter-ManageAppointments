@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 
 import 'package:Flutter_ManageAppointments/Data/eventModel.dart';
 import 'package:Flutter_ManageAppointments/Data/eventViewModel.dart';
-import 'package:time_range_picker/time_range_picker.dart';
 
 class AddAppointment extends StatefulWidget {
   final String title;
@@ -29,6 +28,7 @@ class _AddAppointmentState extends State<AddAppointment> {
   Event? currentEvent;
   List<Event> allEvents = [];
   bool addedEvent = false;
+  bool updateCurrentEvent = false;
 
   @override
   void didChangeDependencies() {
@@ -42,6 +42,7 @@ class _AddAppointmentState extends State<AddAppointment> {
 
     setState(() {
       currentEvent = args["currentEvent"] ?? null;
+      updateCurrentEvent = args["updateCurrentEvent"] ?? false;
 
       if (currentEvent != null && addedEvent == false) {
         textControllerName.text = currentEvent!.name;
@@ -279,7 +280,11 @@ class _AddAppointmentState extends State<AddAppointment> {
                         if (currentEvent == null) {
                           addEvent(eventViewModel);
                         } else {
-                          updateEvent(eventViewModel);
+                          if (updateCurrentEvent) {
+                            updateEvent(eventViewModel);
+                          }else{
+                            addEvent(eventViewModel);
+                          }
                         }
 
                         Navigator.of(context).pushNamed("/home");
