@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:Flutter_ManageAppointments/Data/eventViewModel.dart';
 
@@ -176,7 +177,7 @@ class _ListAppointmentState extends State<ListAppointment> {
                             );
                           });
                     }),
-                child: Text(setOutputEventText(tempEvents[index])))
+                child: Text(setOutputEventText(tempEvents[index]))).animate(delay: (250 + (index * 100)).ms).fadeIn().slideY()
           ],
         );
       },
@@ -206,7 +207,7 @@ class _ListAppointmentState extends State<ListAppointment> {
             onPressed: () => setState(() {
                   selectedClient = clientNameList[index];
                 }),
-            child: Text(clientNameList[index]));
+            child: Text(clientNameList[index])).animate(delay: (250 + (index * 100)).ms).fadeIn().slideY();
       },
     );
   }
@@ -266,7 +267,7 @@ class _ListAppointmentState extends State<ListAppointment> {
                         child:
                             const Text(style: TextStyle(fontSize: 17), "Back"),
                         onPressed: () {
-                          Navigator.of(context).pushNamed("/home");
+                          Navigator.of(context).pop();
                         })),
                     const SizedBox(height: 125),
               ])));

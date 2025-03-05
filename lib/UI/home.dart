@@ -1,5 +1,6 @@
 import 'package:Flutter_ManageAppointments/Data/eventModel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:Flutter_ManageAppointments/Data/eventViewModel.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -193,7 +194,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             );
                           });
                     }),
-                child: Text(setOutputEventText(clientsOnDay[index])))
+                child: Text(setOutputEventText(clientsOnDay[index]))).animate(delay: (250 + (index * 100)).ms).fadeIn().slideY()
           ],
         );
       },
