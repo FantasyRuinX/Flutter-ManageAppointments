@@ -287,7 +287,7 @@ class _AddAppointmentState extends State<AddAppointment> {
                           }
                         }
 
-                        Navigator.of(context).pop();
+                        Navigator.pushNamed(context, "/home");
                       })),
               SizedBox(
                   height: 50,
@@ -295,7 +295,7 @@ class _AddAppointmentState extends State<AddAppointment> {
                   child: FloatingActionButton.large(
                       child: const Text(style: TextStyle(fontSize: 17), "Back"),
                       onPressed: () {
-                        Navigator.of(context).pop();
+                        Navigator.pushNamed(context, "/home");
                       })),
             ]),
       );
