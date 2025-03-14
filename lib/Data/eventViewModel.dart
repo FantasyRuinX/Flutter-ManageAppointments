@@ -45,16 +45,22 @@ class EventViewModel extends ChangeNotifier{
         TimeOfDay itemTimeStart = TimeOfDay(hour: int.parse(itemTime0[0]), minute: int.parse(itemTime0[1]));
         TimeOfDay itemTimeEnd = TimeOfDay(hour: int.parse(itemTime1[0]), minute: int.parse(itemTime1[1]));
 
-        if (!currentTimeStart.isAtSameTimeAs(itemTimeStart) && !currentTimeEnd.isAtSameTimeAs(itemTimeEnd)){
-        if (currentTimeStart.isAfter(itemTimeStart) && currentTimeEnd.isBefore(itemTimeEnd)) {//In range of time
+        //Same time
+        if (currentTimeStart.isAtSameTimeAs(itemTimeStart) && currentTimeEnd.isAtSameTimeAs(itemTimeEnd)){
+          overlappingEvents.add(item);
+        }else{
+        //In range of time
+        if (currentTimeStart.isAfter(itemTimeStart) && currentTimeEnd.isBefore(itemTimeEnd)) {
           overlappingEvents.add(item);
           }}
 
-        if (currentTimeStart.isBefore(itemTimeStart) && currentTimeEnd.isAfter(itemTimeStart)) {//Start is out range but End is in range
+        //Start is out range but End is in range
+        if (currentTimeStart.isBefore(itemTimeStart) && currentTimeEnd.isAfter(itemTimeStart)) {
           overlappingEvents.add(item);
           }
 
-        if (currentTimeStart.isAfter(itemTimeStart) && currentTimeEnd.isAfter(itemTimeEnd)) {//Start is in range but End is out range
+        //Start is in range but End is out range
+        if (currentTimeStart.isAfter(itemTimeStart) && currentTimeEnd.isAfter(itemTimeEnd)) {
           overlappingEvents.add(item);
         }
 
