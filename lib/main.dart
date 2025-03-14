@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white38),
         useMaterial3: true,
       ),
       initialRoute: '/home',
@@ -32,19 +32,19 @@ class MyApp extends StatelessWidget {
             name: '/home',
             page: () => const MyHomePage(title: 'Appointments'),
             transition: Transition.downToUp,
-            transitionDuration: const Duration(seconds: 2),
+            transitionDuration: const Duration(milliseconds: 500),
             curve: Curves.easeInOut),
         GetPage(
             name: '/addAppointments',
             page: () => const AddAppointment(title: 'Manage appointments'),
             transition: Transition.downToUp,
-            transitionDuration: const Duration(seconds: 2),
+            transitionDuration: const Duration(milliseconds: 500),
             curve: Curves.easeInOut),
         GetPage(
             name: '/listAppointments',
             page: () => const ListAppointment(title: 'List appointments'),
             transition: Transition.downToUp,
-            transitionDuration: const Duration(seconds: 2),
+            transitionDuration: const Duration(milliseconds: 500),
             curve: Curves.easeInOut),
       ],
     );
