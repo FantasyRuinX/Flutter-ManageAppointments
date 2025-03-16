@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:Flutter_ManageAppointments/Data/eventViewModel.dart';
-
+import 'Data/backgroundService.dart';
 import 'UI/home.dart';
 import 'UI/addAppointment.dart';
 import 'UI/listAppointment.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Permission.notification.isDenied.then((value) => Permission.notification.request());
+  await initiateBackgroundService();
+  await FlutterBackgroundService().startService();
+  FlutterBackgroundService().invoke("startBackgroundService");
+
   runApp(MultiProvider(
     providers: [ChangeNotifierProvider(create: (_) => EventViewModel())],
     child: const MyApp(),
