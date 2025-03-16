@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:Flutter_ManageAppointments/Data/eventModel.dart';
-import 'package:Flutter_ManageAppointments/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';

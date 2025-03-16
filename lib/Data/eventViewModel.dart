@@ -53,13 +53,11 @@ class EventViewModel extends ChangeNotifier {
         //Same time
         if (currentTimeStart.isAtSameTimeAs(itemTimeStart) &&
             currentTimeEnd.isAtSameTimeAs(itemTimeEnd)) {
-          print("Same time");
           overlappingEvents.add(item);
         } else {
           //In range of time
           if (currentTimeStart.isAfter(itemTimeStart) &&
               currentTimeEnd.isBefore(itemTimeEnd)) {
-            print("In range of time");
             overlappingEvents.add(item);
           }
         }
@@ -67,7 +65,6 @@ class EventViewModel extends ChangeNotifier {
         //Start is out range but End is in range
         if (currentTimeStart.isBefore(itemTimeStart) &&
             currentTimeEnd.isAfter(itemTimeStart)) {
-          print("Start is out range but End is in range");
           overlappingEvents.add(item);
         }
 
@@ -75,7 +72,6 @@ class EventViewModel extends ChangeNotifier {
         if (currentTimeStart.isAfter(itemTimeStart) &&
             currentTimeStart.isBefore(itemTimeEnd) &&
             currentTimeEnd.isAfter(itemTimeEnd)) {
-          print("Start is in range but End is out range");
           overlappingEvents.add(item);
         }
       }
