@@ -15,9 +15,9 @@ class AddAppointment extends StatefulWidget {
 }
 
 class _AddAppointmentState extends State<AddAppointment> {
-
   TimeOfDay selectedTimeStart = TimeOfDay.now();
-  TimeOfDay selectedTimeEnd = TimeOfDay.fromDateTime(DateTime.now().add(Duration(hours: 1)));
+  TimeOfDay selectedTimeEnd =
+      TimeOfDay.fromDateTime(DateTime.now().add(Duration(hours: 1)));
   DateTime? selectedDate = DateTime.now();
 
   TextEditingController textControllerName = TextEditingController();
@@ -43,6 +43,7 @@ class _AddAppointmentState extends State<AddAppointment> {
     setState(() {
       currentEvent = args["currentEvent"] ?? null;
       updateCurrentEvent = args["updateCurrentEvent"] ?? false;
+      textControllerAmount.text = "0";
 
       if (currentEvent != null && addedEvent == false) {
         textControllerName.text = currentEvent!.name;
@@ -54,11 +55,10 @@ class _AddAppointmentState extends State<AddAppointment> {
         List<String> endingTime = currentEvent!.end.split(":");
 
         selectedTimeStart = TimeOfDay(
-                hour: int.parse(startingTime[0]),
-                minute: int.parse(startingTime[1]));
-      selectedTimeEnd =  TimeOfDay(
-                hour: int.parse(endingTime[0]),
-                minute: int.parse(endingTime[1]));
+            hour: int.parse(startingTime[0]),
+            minute: int.parse(startingTime[1]));
+        selectedTimeEnd = TimeOfDay(
+            hour: int.parse(endingTime[0]), minute: int.parse(endingTime[1]));
 
         List<String> dates = currentEvent!.date.split("-");
         selectedDate = DateTime(
@@ -187,10 +187,9 @@ class _AddAppointmentState extends State<AddAppointment> {
                 children: <Widget>[
                   ElevatedButton(
                     onPressed: () async {
-
                       selectedTimeStart = (await showTimePicker(
                         context: context,
-                        initialTime: selectedTimeStart ,
+                        initialTime: selectedTimeStart,
                         helpText: "Appointment will start at : ",
                         initialEntryMode: TimePickerEntryMode.inputOnly,
                         builder: (BuildContext context, Widget? child) {
@@ -277,17 +276,21 @@ class _AddAppointmentState extends State<AddAppointment> {
                       child:
                           const Text(style: TextStyle(fontSize: 17), "Submit"),
                       onPressed: () {
-                        if (currentEvent == null) {
-                          addEvent(eventViewModel);
-                        } else {
-                          if (updateCurrentEvent) {
-                            updateEvent(eventViewModel);
-                          }else{
+                        if (textControllerName.text.isNotEmpty &&
+                            textControllerLocation.text.isNotEmpty &&
+                            textControllerDescr.text.isNotEmpty) {
+                          if (currentEvent == null) {
                             addEvent(eventViewModel);
+                          } else {
+                            if (updateCurrentEvent) {
+                              updateEvent(eventViewModel);
+                            } else {
+                              addEvent(eventViewModel);
+                            }
                           }
-                        }
 
-                        Navigator.pushNamed(context, "/home");
+                          Navigator.pushNamed(context, "/home");
+                        }
                       })),
               SizedBox(
                   height: 50,
