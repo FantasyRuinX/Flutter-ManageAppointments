@@ -221,8 +221,8 @@ class _AddAppointmentState extends State<AddAppointment> {
                     onPressed: () async {
                       final DateTime? date = await showDatePicker(
                           context: context,
-                          firstDate: DateTime.now(),
-                          lastDate: DateTime.utc(2050, 1, 1),
+                          firstDate: DateTime.utc(2001, 1, 1),
+                          lastDate: DateTime.utc(2100, 1, 1),
                           initialEntryMode: DatePickerEntryMode.calendarOnly);
 
                       if (date != null) {

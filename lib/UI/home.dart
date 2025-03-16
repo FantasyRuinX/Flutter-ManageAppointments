@@ -241,7 +241,7 @@ class _MyHomePageState extends State<MyHomePage> {
             TableCalendar(
             focusedDay: _focusedDate,
             firstDay: DateTime.utc(2001, 1, 1),
-            lastDay: DateTime.utc(2050, 1, 1),
+            lastDay: DateTime.utc(2100, 1, 1),
             headerStyle: const HeaderStyle(
                 titleCentered: true, formatButtonVisible: false),
             calendarStyle: const CalendarStyle(
