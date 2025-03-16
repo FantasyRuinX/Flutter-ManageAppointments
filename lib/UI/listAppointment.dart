@@ -274,11 +274,16 @@ class _ListAppointmentState extends State<ListAppointment> {
                                 vertical: 0.0, horizontal: 5.0),
                             border: OutlineInputBorder(),
                             hintText: "Enter Client Name"))),
+                const SizedBox(height: 10),
                 Expanded(
-                    child: SizedBox(height: 200, child: appointmentNameList())),
+                    child: SizedBox(height: 180, child: appointmentNameList())),
+                const SizedBox(height: 10),
+                Text(style: const TextStyle(fontSize: 17),
+                    selectedClient.isEmpty ? "No Selected Clients" : "Selected Client : $selectedClient"),
+                const SizedBox(height: 10),
                 Expanded(
-                    child: SizedBox(
-                        height: 200, child: appointmentList(eventViewModel))),
+                  child: SizedBox(
+                      height: 180, child: appointmentList(eventViewModel))),
                 const SizedBox(height: 20),
                 SizedBox(
                     height: 50,

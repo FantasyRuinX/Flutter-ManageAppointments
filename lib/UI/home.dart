@@ -40,7 +40,6 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       clientDates.clear();
       clients = eventViewModel.organisedEvents;
-
       for (Event event in clients) {
         clientDates.add(event.date);
       }
