@@ -15,10 +15,11 @@ class ListAppointment extends StatefulWidget {
 }
 
 class _ListAppointmentState extends State<ListAppointment> {
-  TextEditingController txtClientName = TextEditingController();
-  List<Event> clientsData = [];
-  List<String> clientNameList = [];
-  String selectedClient = "";
+  final TextEditingController _txtClientName = TextEditingController();
+  List<Event> _clientsData = [];
+  final List<String> _clientNameList = [];
+  String _selectedClient = "";
+  late Size _screenSize = MediaQuery.sizeOf(context);
 
   @override
   void initState() {
@@ -30,11 +31,11 @@ class _ListAppointmentState extends State<ListAppointment> {
     final eventViewModel = Provider.of<EventViewModel>(context, listen: false);
     await eventViewModel.readDB();
     setState(() {
-      clientsData = eventViewModel.organisedEvents;
+      _clientsData = eventViewModel.organisedEvents;
 
-      for (int index = 0; index < clientsData.length; index++) {
-        if (!clientNameList.contains(clientsData[index].name)) {
-          clientNameList.add(clientsData[index].name);
+      for (int index = 0; index < _clientsData.length; index++) {
+        if (!_clientNameList.contains(_clientsData[index].name)) {
+          _clientNameList.add(_clientsData[index].name);
         }
       }
     });
@@ -45,7 +46,7 @@ class _ListAppointmentState extends State<ListAppointment> {
   }
 
   Widget appointmentList(EventViewModel eventViewModel) {
-    if (clientsData.isEmpty) {
+    if (_clientsData.isEmpty) {
       return const Center(
           child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -57,7 +58,7 @@ class _ListAppointmentState extends State<ListAppointment> {
     }
 
     List<Event> tempEvents =
-        clientsData.where((item) => item.name == selectedClient).toList();
+        _clientsData.where((item) => item.name == _selectedClient).toList();
 
     return ListView.builder(
       padding: const EdgeInsets.all(8),
@@ -202,7 +203,7 @@ class _ListAppointmentState extends State<ListAppointment> {
   }
 
   Widget appointmentNameList() {
-    if (clientsData.isEmpty) {
+    if (_clientsData.isEmpty) {
       return const Center(
           child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -215,7 +216,7 @@ class _ListAppointmentState extends State<ListAppointment> {
 
     return ListView.builder(
       padding: const EdgeInsets.all(8),
-      itemCount: clientNameList.length,
+      itemCount: _clientNameList.length,
       itemBuilder: (BuildContext context, int index) {
         return TextButton(
                 style: ButtonStyle(
@@ -228,9 +229,9 @@ class _ListAppointmentState extends State<ListAppointment> {
                     backgroundColor: WidgetStateProperty.all(
                         Theme.of(context).colorScheme.inversePrimary)),
                 onPressed: () => setState(() {
-                      selectedClient = clientNameList[index];
+                      _selectedClient = _clientNameList[index];
                     }),
-                child: Text(clientNameList[index]))
+                child: Text(_clientNameList[index]))
             .animate(delay: (250 + (index * 100)).ms)
             .fadeIn()
             .slideY();
@@ -261,11 +262,11 @@ class _ListAppointmentState extends State<ListAppointment> {
                     height: 50,
                     width: MediaQuery.sizeOf(context).width - 100,
                     child: TextField(
-                        controller: txtClientName,
+                        controller: _txtClientName,
                         onSubmitted: (value) {
                           setState(() {
-                            if (clientNameList.contains(txtClientName.text)) {
-                              selectedClient = txtClientName.text;
+                            if (_clientNameList.contains(_txtClientName.text)) {
+                              _selectedClient = _txtClientName.text;
                             }
                           });
                         },
@@ -279,7 +280,7 @@ class _ListAppointmentState extends State<ListAppointment> {
                     child: SizedBox(height: 180, child: appointmentNameList())),
                 const SizedBox(height: 10),
                 Text(style: const TextStyle(fontSize: 17),
-                    selectedClient.isEmpty ? "No Selected Clients" : "Selected Client : $selectedClient"),
+                    _selectedClient.isEmpty ? "No Selected Clients" : "Selected Client : $_selectedClient"),
                 const SizedBox(height: 10),
                 Expanded(
                   child: SizedBox(

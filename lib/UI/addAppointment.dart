@@ -15,20 +15,20 @@ class AddAppointment extends StatefulWidget {
 }
 
 class _AddAppointmentState extends State<AddAppointment> {
-  TimeOfDay selectedTimeStart = TimeOfDay.now();
-  TimeOfDay selectedTimeEnd =
-      TimeOfDay.fromDateTime(DateTime.now().add(Duration(hours: 1)));
-  DateTime? selectedDate = DateTime.now();
+  TimeOfDay _selectedTimeStart = TimeOfDay.now();
+  TimeOfDay _selectedTimeEnd =
+      TimeOfDay.fromDateTime(DateTime.now().add(const Duration(hours: 1)));
+  DateTime? _selectedDate = DateTime.now();
 
-  TextEditingController textControllerName = TextEditingController();
-  TextEditingController textControllerLocation = TextEditingController();
-  TextEditingController textControllerAmount = TextEditingController();
-  TextEditingController textControllerDescr = TextEditingController();
+  final TextEditingController _textControllerName = TextEditingController();
+  final TextEditingController _textControllerLocation = TextEditingController();
+  final TextEditingController _textControllerAmount = TextEditingController();
+  final TextEditingController _textControllerDescr = TextEditingController();
 
-  Event? currentEvent;
-  List<Event> allEvents = [];
-  bool addedEvent = false;
-  bool updateCurrentEvent = false;
+  Event? _currentEvent;
+  bool _addedEvent = false;
+  bool _updateCurrentEvent = false;
+  late Size _screenSize = MediaQuery.sizeOf(context);
 
   @override
   void didChangeDependencies() {
@@ -38,56 +38,46 @@ class _AddAppointmentState extends State<AddAppointment> {
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ??
             {};
 
-    loadData();
-
     setState(() {
-      currentEvent = args["currentEvent"] ?? null;
-      updateCurrentEvent = args["updateCurrentEvent"] ?? false;
+      _currentEvent = args["currentEvent"] ?? null;
+      _updateCurrentEvent = args["updateCurrentEvent"] ?? false;
 
-      if (currentEvent != null && addedEvent == false) {
-        textControllerName.text = currentEvent!.name;
-        textControllerLocation.text = currentEvent!.location;
-        textControllerAmount.text = currentEvent!.rand;
-        textControllerDescr.text = currentEvent!.info;
+      if (_currentEvent != null && _addedEvent == false) {
+        _textControllerName.text = _currentEvent!.name;
+        _textControllerLocation.text = _currentEvent!.location;
+        _textControllerAmount.text = _currentEvent!.rand;
+        _textControllerDescr.text = _currentEvent!.info;
 
-        List<String> startingTime = currentEvent!.start.split(":");
-        List<String> endingTime = currentEvent!.end.split(":");
+        List<String> startingTime = _currentEvent!.start.split(":");
+        List<String> endingTime = _currentEvent!.end.split(":");
 
-        selectedTimeStart = TimeOfDay(
+        _selectedTimeStart = TimeOfDay(
             hour: int.parse(startingTime[0]),
             minute: int.parse(startingTime[1]));
-        selectedTimeEnd = TimeOfDay(
+        _selectedTimeEnd = TimeOfDay(
             hour: int.parse(endingTime[0]), minute: int.parse(endingTime[1]));
 
-        List<String> dates = currentEvent!.date.split("-");
-        selectedDate = DateTime(
+        List<String> dates = _currentEvent!.date.split("-");
+        _selectedDate = DateTime(
             int.parse(dates[0]), int.parse(dates[1]), int.parse(dates[2]));
 
-        addedEvent = true;
+        _addedEvent = true;
       }
-    });
-  }
-
-  Future<void> loadData() async {
-    final eventViewModel = Provider.of<EventViewModel>(context, listen: false);
-    await eventViewModel.readDB();
-    setState(() {
-      allEvents = eventViewModel.organisedEvents;
     });
   }
 
   Future<void> addEvent(EventViewModel viewmodel) async {
     Event newEvent = Event(
         id: viewmodel.organisedEvents.length,
-        name: textControllerName.text,
+        name: _textControllerName.text,
         start:
-            "${selectedTimeStart.hour}:${selectedTimeStart.minute.toString().padLeft(2, '0')}",
+            "${_selectedTimeStart.hour}:${_selectedTimeStart.minute.toString().padLeft(2, '0')}",
         end:
-            "${selectedTimeEnd.hour}:${selectedTimeEnd.minute.toString().padLeft(2, '0')}",
-        date: DateFormat("yyyy-MM-dd").format(selectedDate!),
-        rand: textControllerAmount.text,
-        info: textControllerDescr.text,
-        location: textControllerLocation.text);
+            "${_selectedTimeEnd.hour}:${_selectedTimeEnd.minute.toString().padLeft(2, '0')}",
+        date: DateFormat("yyyy-MM-dd").format(_selectedDate!),
+        rand: _textControllerAmount.text,
+        info: _textControllerDescr.text,
+        location: _textControllerLocation.text);
 
     overlappingMessage(viewmodel, newEvent);
     await viewmodel.writeDB(userData: newEvent);
@@ -96,19 +86,19 @@ class _AddAppointmentState extends State<AddAppointment> {
   Future<void> updateEvent(EventViewModel viewmodel) async {
     Event newEvent = Event(
         id: viewmodel.organisedEvents.length,
-        name: textControllerName.text,
+        name: _textControllerName.text,
         start:
-            "${selectedTimeStart.hour}:${selectedTimeStart.minute.toString().padLeft(2, '0')}",
+            "${_selectedTimeStart.hour}:${_selectedTimeStart.minute.toString().padLeft(2, '0')}",
         end:
-            "${selectedTimeEnd.hour}:${selectedTimeEnd.minute.toString().padLeft(2, '0')}",
-        date: DateFormat("yyyy-MM-dd").format(selectedDate!),
-        rand: textControllerAmount.text,
-        info: textControllerDescr.text,
-        location: textControllerLocation.text);
+            "${_selectedTimeEnd.hour}:${_selectedTimeEnd.minute.toString().padLeft(2, '0')}",
+        date: DateFormat("yyyy-MM-dd").format(_selectedDate!),
+        rand: _textControllerAmount.text,
+        info: _textControllerDescr.text,
+        location: _textControllerLocation.text);
 
     overlappingMessage(viewmodel, newEvent);
     await viewmodel.updateEventDB(
-        userDataOld: currentEvent!, userDataNew: newEvent);
+        userDataOld: _currentEvent!, userDataNew: newEvent);
   }
 
   Future<void> overlappingMessage(EventViewModel viewmodel, userEvent) async {
@@ -160,7 +150,7 @@ class _AddAppointmentState extends State<AddAppointment> {
                   height: 40,
                   width: 340,
                   child: TextField(
-                      controller: textControllerName,
+                      controller: _textControllerName,
                       decoration: const InputDecoration(
                           contentPadding: EdgeInsets.symmetric(
                             vertical: 0.0,
@@ -172,7 +162,7 @@ class _AddAppointmentState extends State<AddAppointment> {
                   height: 40,
                   width: 340,
                   child: TextField(
-                      controller: textControllerLocation,
+                      controller: _textControllerLocation,
                       decoration: const InputDecoration(
                           contentPadding: EdgeInsets.symmetric(
                             vertical: 0.0,
@@ -186,9 +176,9 @@ class _AddAppointmentState extends State<AddAppointment> {
                 children: <Widget>[
                   ElevatedButton(
                     onPressed: () async {
-                      selectedTimeStart = (await showTimePicker(
+                      _selectedTimeStart = (await showTimePicker(
                         context: context,
-                        initialTime: selectedTimeStart,
+                        initialTime: _selectedTimeStart,
                         helpText: "Appointment will start at : ",
                         initialEntryMode: TimePickerEntryMode.inputOnly,
                         builder: (BuildContext context, Widget? child) {
@@ -199,9 +189,9 @@ class _AddAppointmentState extends State<AddAppointment> {
                           );
                         },
                       ))!;
-                      selectedTimeEnd = (await showTimePicker(
+                      _selectedTimeEnd = (await showTimePicker(
                         context: context,
-                        initialTime: selectedTimeEnd,
+                        initialTime: _selectedTimeEnd,
                         helpText: "Appointment will end at : ",
                         initialEntryMode: TimePickerEntryMode.inputOnly,
                         builder: (BuildContext context, Widget? child) {
@@ -215,7 +205,7 @@ class _AddAppointmentState extends State<AddAppointment> {
                     },
                     child: Text(
                         textAlign: TextAlign.center,
-                        "Set Duration\n${selectedTimeStart.hour}:${selectedTimeStart.minute.toString().padLeft(2, '0')} - ${selectedTimeEnd.hour}:${selectedTimeEnd.minute.toString().padLeft(2, '0')}"),
+                        "Set Duration\n${_selectedTimeStart.hour}:${_selectedTimeStart.minute.toString().padLeft(2, '0')} - ${_selectedTimeEnd.hour}:${_selectedTimeEnd.minute.toString().padLeft(2, '0')}"),
                   ),
                   ElevatedButton(
                     onPressed: () async {
@@ -227,13 +217,13 @@ class _AddAppointmentState extends State<AddAppointment> {
 
                       if (date != null) {
                         setState(() {
-                          selectedDate = date;
+                          _selectedDate = date;
                         });
                       }
                     },
                     child: Text(
                         textAlign: TextAlign.center,
-                        "Set Date\n${selectedDate!.day} ${DateFormat.MMMM().format(selectedDate!)}"),
+                        "Set Date\n${_selectedDate!.day} ${DateFormat.MMMM().format(_selectedDate!)}"),
                   ),
                 ],
               ),
@@ -241,7 +231,7 @@ class _AddAppointmentState extends State<AddAppointment> {
                   height: 40,
                   width: 340,
                   child: TextField(
-                      controller: textControllerAmount,
+                      controller: _textControllerAmount,
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                           contentPadding: EdgeInsets.symmetric(
@@ -254,7 +244,7 @@ class _AddAppointmentState extends State<AddAppointment> {
                   height: 120,
                   width: 340,
                   child: TextField(
-                    controller: textControllerDescr,
+                    controller: _textControllerDescr,
                     keyboardType: TextInputType.multiline,
                     maxLines: 3,
                     decoration: const InputDecoration(
@@ -275,17 +265,17 @@ class _AddAppointmentState extends State<AddAppointment> {
                       child:
                           const Text(style: TextStyle(fontSize: 17), "Submit"),
                       onPressed: () {
-                        if (textControllerName.text.isNotEmpty &&
-                            textControllerLocation.text.isNotEmpty &&
-                            textControllerDescr.text.isNotEmpty) {
+                        if (_textControllerName.text.isNotEmpty &&
+                            _textControllerLocation.text.isNotEmpty &&
+                            _textControllerDescr.text.isNotEmpty) {
 
-                          if (textControllerAmount.text.isEmpty)
-                          {textControllerAmount.text = "0";}
+                          if (_textControllerAmount.text.isEmpty)
+                          {_textControllerAmount.text = "0";}
 
-                          if (currentEvent == null) {
+                          if (_currentEvent == null) {
                             addEvent(eventViewModel);
                           } else {
-                            if (updateCurrentEvent) {
+                            if (_updateCurrentEvent) {
                               updateEvent(eventViewModel);
                             } else {
                               addEvent(eventViewModel);
