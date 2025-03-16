@@ -43,7 +43,6 @@ class _AddAppointmentState extends State<AddAppointment> {
     setState(() {
       currentEvent = args["currentEvent"] ?? null;
       updateCurrentEvent = args["updateCurrentEvent"] ?? false;
-      textControllerAmount.text = "0";
 
       if (currentEvent != null && addedEvent == false) {
         textControllerName.text = currentEvent!.name;
@@ -279,6 +278,10 @@ class _AddAppointmentState extends State<AddAppointment> {
                         if (textControllerName.text.isNotEmpty &&
                             textControllerLocation.text.isNotEmpty &&
                             textControllerDescr.text.isNotEmpty) {
+
+                          if (textControllerAmount.text.isEmpty)
+                          {textControllerAmount.text = "0";}
+
                           if (currentEvent == null) {
                             addEvent(eventViewModel);
                           } else {
