@@ -91,7 +91,8 @@ class _ListAppointmentState extends State<ListAppointment> {
                                     title: Text(tempEvents[index].name),
                                     content: Text(
                                         "Location : ${tempEvents[index].location}\nPayment : R${tempEvents[index].rand}\n${tempEvents[index].info}"),
-                                    buttonPadding: const EdgeInsets.all(20),
+                                    insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+                                    actionsPadding: const EdgeInsets.symmetric(horizontal: 10,vertical: 10),
                                     actions: [
                                       Row(
                                           mainAxisAlignment:

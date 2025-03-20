@@ -96,6 +96,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
+                              insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+                              actionsPadding: const EdgeInsets.symmetric(horizontal: 10,vertical: 10),
                               shape: RoundedRectangleBorder(
                                   borderRadius: const BorderRadius.all(
                                       Radius.circular(4)),
@@ -109,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               actions: [
                                 Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                        MainAxisAlignment.center,
                                     children: [
                                       TextButton(
                                           onPressed: () {
@@ -261,9 +263,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         ? [1]
                         : [],
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: _screenSize.height * 0.05),
               Expanded(child: appointmentList(eventViewModel)),
-              const SizedBox(height: 10),
+               SizedBox(height: _screenSize.height * 0.05),
             ],
           ),
           bottomNavigationBar: BottomNavigationBar(
