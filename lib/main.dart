@@ -8,19 +8,24 @@ import 'Data/backgroundService.dart';
 import 'UI/home.dart';
 import 'UI/addAppointment.dart';
 import 'UI/listAppointment.dart';
+import 'package:device_preview/device_preview.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Permission.notification.isDenied.then((value) => Permission.notification.request());
+  await Permission.notification.isDenied
+      .then((value) => Permission.notification.request());
   await initiateBackgroundService();
   await FlutterBackgroundService().startService();
   FlutterBackgroundService().invoke("startBackgroundService");
 
-  runApp(MultiProvider(
-    providers: [ChangeNotifierProvider(create: (_) => EventViewModel())],
-    child: const MyApp(),
-  ));
+  runApp(DevicePreview(
+      builder: (context) => MultiProvider(
+            providers: [
+              ChangeNotifierProvider(create: (_) => EventViewModel())
+            ],
+            child: const MyApp(),
+          )));
 }
 
 class MyApp extends StatelessWidget {
@@ -30,6 +35,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+
+      useInheritedMediaQuery: true,
+      locale: DevicePreview.locale(context),
+      builder: DevicePreview.appBuilder,
+
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white38),
