@@ -28,6 +28,7 @@ class _AddAppointmentState extends State<AddAppointment> {
   Event? _currentEvent;
   bool _addedEvent = false;
   bool _updateCurrentEvent = false;
+  int _selectedItem = 0;
   late Size _screenSize = MediaQuery.sizeOf(context);
 
   @override
@@ -64,6 +65,37 @@ class _AddAppointmentState extends State<AddAppointment> {
         _addedEvent = true;
       }
     });
+  }
+
+  void setCurrentItem(BuildContext context,EventViewModel eventViewModel,int index) {
+
+    setState(() {
+      _selectedItem = index;
+    switch(_selectedItem){
+      case 0 : if (_textControllerName.text.isNotEmpty &&
+          _textControllerLocation.text.isNotEmpty &&
+          _textControllerDescr.text.isNotEmpty) {
+
+        if (_textControllerAmount.text.isEmpty)
+        {_textControllerAmount.text = "0";}
+
+        if (_currentEvent == null) {
+          addEvent(eventViewModel);
+        } else {
+          if (_updateCurrentEvent) {
+            updateEvent(eventViewModel);
+          } else {
+            addEvent(eventViewModel);
+          }
+        }
+
+        Navigator.pushNamed(context, "/home");
+      }
+      break;
+
+      case 1 : Navigator.pushNamed(context, "/home");break;
+    }});
+
   }
 
   Future<void> addEvent(EventViewModel viewmodel) async {
@@ -258,43 +290,24 @@ class _AddAppointmentState extends State<AddAppointment> {
               const SizedBox(
                 height: 20,
               ),
-              SizedBox(
-                  height: 50,
-                  width: 200,
-                  child: FloatingActionButton.large(
-                      child:
-                          const Text(style: TextStyle(fontSize: 17), "Submit"),
-                      onPressed: () {
-                        if (_textControllerName.text.isNotEmpty &&
-                            _textControllerLocation.text.isNotEmpty &&
-                            _textControllerDescr.text.isNotEmpty) {
-
-                          if (_textControllerAmount.text.isEmpty)
-                          {_textControllerAmount.text = "0";}
-
-                          if (_currentEvent == null) {
-                            addEvent(eventViewModel);
-                          } else {
-                            if (_updateCurrentEvent) {
-                              updateEvent(eventViewModel);
-                            } else {
-                              addEvent(eventViewModel);
-                            }
-                          }
-
-                          Navigator.pushNamed(context, "/home");
-                        }
-                      })),
-              SizedBox(
-                  height: 50,
-                  width: 200,
-                  child: FloatingActionButton.large(
-                      child: const Text(style: TextStyle(fontSize: 17), "Back"),
-                      onPressed: () {
-                        Navigator.pushNamed(context, "/home");
-                      })),
             ]),
+          bottomNavigationBar: BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add"),
+              BottomNavigationBarItem(icon: Icon(Icons.arrow_back), label: "Back"),
+            ],
+            currentIndex: _selectedItem,
+            onTap: (i) => setCurrentItem(context,eventViewModel,i),
+            //Show all 4 icons because more than 3 makes it invisible
+            type: BottomNavigationBarType.fixed,
+            //
+            selectedItemColor: Colors.black,
+            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            iconSize: 30,
+          )
+
       );
     });
   }
+
 }
