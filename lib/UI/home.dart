@@ -1,9 +1,11 @@
 import 'package:Flutter_ManageAppointments/Data/eventModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:Flutter_ManageAppointments/Data/eventViewModel.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -47,6 +49,71 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void sendWhatsappMsg() {
+    TextEditingController numTxt = TextEditingController();
+    TextEditingController msgTxt = TextEditingController();
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: const BorderRadius.all(Radius.circular(4)),
+                side: BorderSide(
+                    color: Theme.of(context).colorScheme.primary, width: 3)),
+            title: const Text("Send Message"),
+            actions: [
+              Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                SizedBox(
+                    width: 300, // Set a fixed width
+                    child: TextField(
+                        controller: numTxt,
+                        decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: 0.0,
+                              horizontal: 5.0,
+                            ),
+                            border: OutlineInputBorder(),
+                            hintText: "Enter client number"))),
+                SizedBox(
+                    width: 300, // Set a fixed width
+                    child: TextField(
+                        controller: msgTxt,
+                        decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: 0.0,
+                              horizontal: 5.0,
+                            ),
+                            border: OutlineInputBorder(),
+                            hintText: "Enter client message"))),
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("Close")),
+                TextButton(
+                    onPressed: () async {
+
+                      //print("numTxt.text.isNotEmpty : ${numTxt.text.isNotEmpty}");
+                      //print("numTxt.text.isNum : ${numTxt.text.isNum}");
+                      if (numTxt.text.isNotEmpty && numTxt.text.isNum) {
+                        final url =
+                            'https://wa.me/${numTxt.text}?text=${Uri.encodeFull(
+                            msgTxt.text)}';
+
+                        //print(canLaunchUrl(Uri.parse(url)));
+                        await launchUrl(Uri.parse(url));
+
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: const Text("Send")),
+              ])
+            ],
+          );
+        });
+  }
+
   void setCurrentItem(
       BuildContext context, EventViewModel eventViewModel, int index) {
     //Show Dialog variables
@@ -60,6 +127,9 @@ class _MyHomePageState extends State<MyHomePage> {
           break;
         case 1:
           Navigator.pushNamed(context, "/listAppointments");
+          break;
+        case 2:
+          sendWhatsappMsg();
           break;
       }
     });
@@ -96,8 +166,10 @@ class _MyHomePageState extends State<MyHomePage> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              insetPadding: const EdgeInsets.symmetric(horizontal: 20),
-                              actionsPadding: const EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+                              insetPadding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              actionsPadding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10),
                               shape: RoundedRectangleBorder(
                                   borderRadius: const BorderRadius.all(
                                       Radius.circular(4)),
@@ -110,8 +182,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   "Location : ${clientsOnDay[index].location}\nPayment : R${clientsOnDay[index].rand}\n${clientsOnDay[index].info}"),
                               actions: [
                                 Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       TextButton(
                                           onPressed: () {
@@ -265,7 +336,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               SizedBox(height: _screenSize.height * 0.05),
               Expanded(child: appointmentList(eventViewModel)),
-               SizedBox(height: _screenSize.height * 0.05),
+              SizedBox(height: _screenSize.height * 0.05),
             ],
           ),
           bottomNavigationBar: BottomNavigationBar(
@@ -273,6 +344,9 @@ class _MyHomePageState extends State<MyHomePage> {
               BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add"),
               BottomNavigationBarItem(
                   icon: Icon(Icons.person), label: "Clients"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.message),
+                  label: "Test Send message via Whatsapp"),
             ],
             currentIndex: _selectedItem,
             onTap: (i) => setCurrentItem(context, eventViewModel, i),
