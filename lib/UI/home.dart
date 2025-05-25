@@ -22,8 +22,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _selectedItem = 0;
   List<Event> _clients = [];
   final List<String> _clientDates = [];
-  late Size _screenSize = MediaQuery.sizeOf(context);
-
+  late Size _screenSize;
   @override
   void initState() {
     super.initState();
@@ -93,15 +92,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: const Text("Close")),
                 TextButton(
                     onPressed: () async {
-
-                      //print("numTxt.text.isNotEmpty : ${numTxt.text.isNotEmpty}");
-                      //print("numTxt.text.isNum : ${numTxt.text.isNum}");
                       if (numTxt.text.isNotEmpty && numTxt.text.isNum) {
                         final url =
-                            'https://wa.me/${numTxt.text}?text=${Uri.encodeFull(
-                            msgTxt.text)}';
+                            'https://wa.me/${numTxt.text}?text=${Uri.encodeFull(msgTxt.text)}';
 
-                        //print(canLaunchUrl(Uri.parse(url)));
                         await launchUrl(Uri.parse(url));
 
                         Navigator.of(context).pop();
@@ -114,8 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
-  void setCurrentItem(
-      BuildContext context, EventViewModel eventViewModel, int index) {
+  void setCurrentItem(BuildContext context, EventViewModel eventViewModel, int index) {
     //Show Dialog variables
     setState(() {
       _selectedItem = index;
@@ -129,7 +122,8 @@ class _MyHomePageState extends State<MyHomePage> {
           Navigator.pushNamed(context, "/listAppointments");
           break;
         case 2:
-          sendWhatsappMsg();
+          //sendWhatsappMsg();
+          print(_screenSize.toString());
           break;
       }
     });
@@ -288,6 +282,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    setState(() {
+      _screenSize = MediaQuery.sizeOf(context);
+    });
+    print(_screenSize.toString());
+
     return Consumer<EventViewModel>(builder: (context, eventViewModel, child) {
       return Scaffold(
           appBar: AppBar(
@@ -299,44 +299,51 @@ class _MyHomePageState extends State<MyHomePage> {
           body: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              TableCalendar(
-                focusedDay: _focusedDate,
-                firstDay: DateTime.utc(2001, 1, 1),
-                lastDay: DateTime.utc(2100, 1, 1),
-                headerStyle: const HeaderStyle(
-                    titleCentered: true, formatButtonVisible: false),
-                calendarStyle: const CalendarStyle(
-                    todayTextStyle: TextStyle(color: Colors.black),
-                    selectedTextStyle: TextStyle(color: Colors.black),
-                    selectedDecoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        border: Border(
-                            bottom:
-                                BorderSide(color: Colors.indigo, width: 4)))),
+              SizedBox(
+                  width: _screenSize.width,
+                  height: _screenSize.height * 0.4,
+                  child: TableCalendar(
+                    shouldFillViewport: true,
+                    focusedDay: _focusedDate,
+                    firstDay: DateTime.utc(2001, 1, 1),
+                    lastDay: DateTime.utc(2100, 1, 1),
+                    headerStyle: const HeaderStyle(
+                        titleCentered: true, formatButtonVisible: false),
+                    calendarStyle: const CalendarStyle(
+                        todayTextStyle: TextStyle(color: Colors.black),
+                        selectedTextStyle: TextStyle(color: Colors.black),
+                        selectedDecoration: BoxDecoration(
+                            shape: BoxShape.rectangle,
+                            border: Border(
+                                bottom: BorderSide(
+                                    color: Colors.indigo, width: 4)))),
 
-                //Show selected date
-                selectedDayPredicate: (day) => isSameDay(_selectedDate, day),
+                    //Show selected date
+                    selectedDayPredicate: (day) =>
+                        isSameDay(_selectedDate, day),
 
-                onDaySelected: (selectedDay, focusedDay) async {
-                  if (!isSameDay(_selectedDate, selectedDay)) {
-                    await eventViewModel.readDB();
-                    setState(() {
-                      _selectedDate = selectedDay;
-                      _focusedDate = focusedDay;
-                      _clients = eventViewModel.organisedEvents;
-                    });
-                  }
-                },
-                //----------------
+                    onDaySelected: (selectedDay, focusedDay) async {
+                      if (!isSameDay(_selectedDate, selectedDay)) {
+                        await eventViewModel.readDB();
+                        setState(() {
+                          _selectedDate = selectedDay;
+                          _focusedDate = focusedDay;
+                          _clients = eventViewModel.organisedEvents;
+                        });
+                      }
+                    },
+                    //----------------
 
-                eventLoader: (day) =>
-                    _clientDates.contains(day.toString().split(" ")[0])
-                        ? [1]
-                        : [],
-              ),
+                    eventLoader: (day) =>
+                        _clientDates.contains(day.toString().split(" ")[0])
+                            ? [1]
+                            : [],
+                  )),
               SizedBox(height: _screenSize.height * 0.05),
-              Expanded(child: appointmentList(eventViewModel)),
-              SizedBox(height: _screenSize.height * 0.05),
+              SizedBox(
+                  width: _screenSize.width,
+                  height: _screenSize.height * 0.3,
+                  child: appointmentList(eventViewModel)),
             ],
           ),
           bottomNavigationBar: BottomNavigationBar(
