@@ -257,9 +257,7 @@ class _ListAppointmentState extends State<ListAppointment> {
 
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      _screenSize = MediaQuery.sizeOf(context);
-    });
+    _screenSize = MediaQuery.sizeOf(context);
 
     return Consumer<EventViewModel>(builder: (context, eventViewModel, child) {
       return SafeArea(
@@ -270,51 +268,54 @@ class _ListAppointmentState extends State<ListAppointment> {
                 automaticallyImplyLeading: false,
                 title: Text(widget.title),
               ),
-              body: Center(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                    SizedBox(height: _screenSize.height * 0.02),
-                    SizedBox(
-                        height: _screenSize.height * 0.05,
-                        child: const Text(
-                            style: TextStyle(fontSize: 17),
-                            "Please enter or click on client name")),
-                    SizedBox(
-                        height: _screenSize.width * 0.1,
-                        width: _screenSize.width * 0.75,
-                        child: TextField(
-                            controller: _txtClientName,
-                            onSubmitted: (value) {
-                              setState(() {
-                                if (_clientNameList
-                                    .contains(_txtClientName.text)) {
-                                  _selectedClient = _txtClientName.text;
-                                }
-                              });
-                            },
-                            decoration: const InputDecoration(
-                                contentPadding: EdgeInsets.symmetric(
-                                    vertical: 0.0, horizontal: 5.0),
-                                border: OutlineInputBorder(),
-                                hintText: "Enter Client Name"))),
-                    SizedBox(height: _screenSize.height * 0.02),
-                    SizedBox(
-                        width: _screenSize.width,
-                        height: _screenSize.height * 0.25,
-                        child: appointmentNameList()),
-                    SizedBox(
-                        height: _screenSize.height * 0.05,
-                        child: Center(child : Text(
-                            style: const TextStyle(fontSize: 17),
-                            _selectedClient.isEmpty
-                                ? "No Selected Clients"
-                                : "Selected Client : $_selectedClient"))),
-                    SizedBox(
-                        width: _screenSize.width,
-                        height: _screenSize.height * 0.3,
-                        child: appointmentList(eventViewModel)),
-                  ])),
+              body: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Center(
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                        SizedBox(height: _screenSize.height * 0.02),
+                        SizedBox(
+                            height: _screenSize.height * 0.05,
+                            child: const Text(
+                                style: TextStyle(fontSize: 17),
+                                "Please enter or click on client name")),
+                        SizedBox(
+                            height: _screenSize.width * 0.1,
+                            width: _screenSize.width * 0.75,
+                            child: TextField(
+                                controller: _txtClientName,
+                                onSubmitted: (value) {
+                                  setState(() {
+                                    if (_clientNameList
+                                        .contains(_txtClientName.text)) {
+                                      _selectedClient = _txtClientName.text;
+                                    }
+                                  });
+                                },
+                                decoration: const InputDecoration(
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 0.0, horizontal: 5.0),
+                                    border: OutlineInputBorder(),
+                                    hintText: "Enter Client Name"))),
+                        SizedBox(height: _screenSize.height * 0.02),
+                        SizedBox(
+                            width: _screenSize.width,
+                            height: _screenSize.height * 0.25,
+                            child: appointmentNameList()),
+                        SizedBox(
+                            height: _screenSize.height * 0.05,
+                            child: Center(
+                                child: Text(
+                                    style: const TextStyle(fontSize: 17),
+                                    _selectedClient.isEmpty
+                                        ? "No Selected Clients"
+                                        : "Selected Client : $_selectedClient"))),
+                        SizedBox(
+                            width: _screenSize.width,
+                            height: _screenSize.height * 0.3,
+                            child: appointmentList(eventViewModel)),
+                      ]))),
               bottomNavigationBar: BottomNavigationBar(
                 items: const <BottomNavigationBarItem>[
                   BottomNavigationBarItem(
