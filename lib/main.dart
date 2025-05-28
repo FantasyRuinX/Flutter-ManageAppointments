@@ -5,6 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:Flutter_ManageAppointments/Data/eventViewModel.dart';
 import 'Data/backgroundService.dart';
+import 'UI/analysisAppointment.dart';
 import 'UI/home.dart';
 import 'UI/addAppointment.dart';
 import 'UI/listAppointment.dart';
@@ -51,7 +52,7 @@ class MyApp extends StatelessWidget {
             name: '/home',
             page: () => const MyHomePage(title: 'Appointments'),
             preventDuplicates: true,
-            transition: Transition.downToUp,
+            transition: Transition.zoom,
             transitionDuration: const Duration(milliseconds: 500),
             curve: Curves.easeInOut),
         GetPage(
@@ -70,7 +71,7 @@ class MyApp extends StatelessWidget {
             curve: Curves.easeInOut),
         GetPage(
             name: '/analysisAppointments',
-            page: () => const ListAppointment(title: 'Analysis appointments'),
+            page: () => const AnalysisAppointment(title: 'Analysis appointments'),
             preventDuplicates: true,
             transition: Transition.downToUp,
             transitionDuration: const Duration(milliseconds: 500),
