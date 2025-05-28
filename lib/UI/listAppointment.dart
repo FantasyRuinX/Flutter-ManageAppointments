@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:Flutter_ManageAppointments/Data/eventViewModel.dart';
-
+import 'package:get/get.dart';
 import '../Data/eventModel.dart';
 
 class ListAppointment extends StatefulWidget {
@@ -50,10 +50,11 @@ class _ListAppointmentState extends State<ListAppointment> {
 
       switch (_selectedItem) {
         case 0:
-          Navigator.pushNamed(context, "/home");
+          Get.offAndToNamed("/home");
           break;
         case 1:
-          Navigator.pushNamed(context, "/home");
+          Get.offAndToNamed("/home");
+          //Navigator.pushNamed(context, "/home");
           break;
       }
     });
@@ -274,7 +275,6 @@ class _ListAppointmentState extends State<ListAppointment> {
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
-                        SizedBox(height: _screenSize.height * 0.02),
                         SizedBox(
                             height: _screenSize.height * 0.05,
                             child: const Text(

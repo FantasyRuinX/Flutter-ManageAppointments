@@ -23,6 +23,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Event> _clients = [];
   final List<String> _clientDates = [];
   late Size _screenSize;
+
   @override
   void initState() {
     super.initState();
@@ -108,18 +109,18 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
-  void setCurrentItem(BuildContext context, EventViewModel eventViewModel, int index) {
+  void setCurrentItem(
+      BuildContext context, EventViewModel eventViewModel, int index) {
     //Show Dialog variables
     setState(() {
       _selectedItem = index;
 
       switch (_selectedItem) {
         case 0:
-          Navigator.pushNamed(context, "/addAppointments",
-              arguments: <String, dynamic>{"updateEvent": null});
+          Get.offAndToNamed("/addAppointments",arguments: <String, dynamic>{"updateEvent": null});
           break;
         case 1:
-          Navigator.pushNamed(context, "/listAppointments");
+          Get.offAndToNamed("/listAppointments");
           break;
         case 2:
           //sendWhatsappMsg();
@@ -282,88 +283,89 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
-    setState(() {
-      _screenSize = MediaQuery.sizeOf(context);
-    });
-    print(_screenSize.toString());
+    _screenSize = MediaQuery.sizeOf(context);
 
     return Consumer<EventViewModel>(builder: (context, eventViewModel, child) {
-      return Scaffold(
-          appBar: AppBar(
-            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            centerTitle: true,
-            automaticallyImplyLeading: false,
-            title: Text(widget.title),
-          ),
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              SizedBox(
-                  width: _screenSize.width,
-                  height: _screenSize.height * 0.4,
-                  child: TableCalendar(
-                    shouldFillViewport: true,
-                    focusedDay: _focusedDate,
-                    firstDay: DateTime.utc(2001, 1, 1),
-                    lastDay: DateTime.utc(2100, 1, 1),
-                    headerStyle: const HeaderStyle(
-                        titleCentered: true, formatButtonVisible: false),
-                    calendarStyle: const CalendarStyle(
-                        todayTextStyle: TextStyle(color: Colors.black),
-                        selectedTextStyle: TextStyle(color: Colors.black),
-                        selectedDecoration: BoxDecoration(
-                            shape: BoxShape.rectangle,
-                            border: Border(
-                                bottom: BorderSide(
-                                    color: Colors.indigo, width: 4)))),
+      return SafeArea(
+          child: Scaffold(
+              appBar: AppBar(
+                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                centerTitle: true,
+                automaticallyImplyLeading: false,
+                title: Text(widget.title),
+              ),
+              body: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      SizedBox(
+                          width: _screenSize.width,
+                          height: _screenSize.height * 0.4,
+                          child: TableCalendar(
+                            shouldFillViewport: true,
+                            focusedDay: _focusedDate,
+                            firstDay: DateTime.utc(2001, 1, 1),
+                            lastDay: DateTime.utc(2100, 1, 1),
+                            headerStyle: const HeaderStyle(
+                                titleCentered: true,
+                                formatButtonVisible: false),
+                            calendarStyle: const CalendarStyle(
+                                todayTextStyle: TextStyle(color: Colors.black),
+                                selectedTextStyle:
+                                    TextStyle(color: Colors.black),
+                                selectedDecoration: BoxDecoration(
+                                    shape: BoxShape.rectangle,
+                                    border: Border(
+                                        bottom: BorderSide(
+                                            color: Colors.indigo, width: 4)))),
 
-                    //Show selected date
-                    selectedDayPredicate: (day) =>
-                        isSameDay(_selectedDate, day),
+                            //Show selected date
+                            selectedDayPredicate: (day) =>
+                                isSameDay(_selectedDate, day),
 
-                    onDaySelected: (selectedDay, focusedDay) async {
-                      if (!isSameDay(_selectedDate, selectedDay)) {
-                        await eventViewModel.readDB();
-                        setState(() {
-                          _selectedDate = selectedDay;
-                          _focusedDate = focusedDay;
-                          _clients = eventViewModel.organisedEvents;
-                        });
-                      }
-                    },
-                    //----------------
+                            onDaySelected: (selectedDay, focusedDay) async {
+                              if (!isSameDay(_selectedDate, selectedDay)) {
+                                await eventViewModel.readDB();
+                                setState(() {
+                                  _selectedDate = selectedDay;
+                                  _focusedDate = focusedDay;
+                                  _clients = eventViewModel.organisedEvents;
+                                });
+                              }
+                            },
+                            //----------------
 
-                    eventLoader: (day) =>
-                        _clientDates.contains(day.toString().split(" ")[0])
-                            ? [1]
-                            : [],
+                            eventLoader: (day) => _clientDates
+                                    .contains(day.toString().split(" ")[0])
+                                ? [1]
+                                : [],
+                          )),
+                      SizedBox(height: _screenSize.height * 0.05),
+                      SizedBox(
+                          width: _screenSize.width,
+                          height: _screenSize.height * 0.3,
+                          child: appointmentList(eventViewModel)),
+                    ],
                   )),
-              SizedBox(height: _screenSize.height * 0.05),
-              SizedBox(
-                  width: _screenSize.width,
-                  height: _screenSize.height * 0.3,
-                  child: appointmentList(eventViewModel)),
-            ],
-          ),
-          bottomNavigationBar: BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.person), label: "Clients"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.message),
-                  label: "Test Send message via Whatsapp"),
-            ],
-            currentIndex: _selectedItem,
-            onTap: (i) => setCurrentItem(context, eventViewModel, i),
-            //Show all 4 icons because more than 3 makes it invisible
-            type: BottomNavigationBarType.fixed,
-            //
-            selectedItemColor: Colors.black,
-            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            iconSize: 30,
-          ));
+              bottomNavigationBar: BottomNavigationBar(
+                items: const <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add"),
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.person), label: "Clients"),
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.message),
+                      label: "Test Send message via Whatsapp"),
+                ],
+                currentIndex: _selectedItem,
+                onTap: (i) => setCurrentItem(context, eventViewModel, i),
+                //Show all 4 icons because more than 3 makes it invisible
+                type: BottomNavigationBarType.fixed,
+                //
+                selectedItemColor: Colors.black,
+                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                iconSize: 30,
+              )));
     });
   }
 }
