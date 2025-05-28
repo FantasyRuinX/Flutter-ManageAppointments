@@ -50,11 +50,10 @@ class _ListAppointmentState extends State<ListAppointment> {
 
       switch (_selectedItem) {
         case 0:
-          Get.offAndToNamed("/home");
+          Get.offAndToNamed("/analysisAppointments");
           break;
         case 1:
           Get.offAndToNamed("/home");
-          //Navigator.pushNamed(context, "/home");
           break;
       }
     });
@@ -184,26 +183,14 @@ class _ListAppointmentState extends State<ListAppointment> {
                                           child: const Text("Remove")),
                                       TextButton(
                                           onPressed: () {
-                                            Navigator.of(context).pop();
-                                            Navigator.pushNamed(
-                                                context, "/addAppointments",
-                                                arguments: <String, dynamic>{
-                                                  "currentEvent":
-                                                      tempEvents[index],
-                                                  "updateCurrentEvent": true
-                                                });
+                                            Get.offAndToNamed("/addAppointments",arguments: <String, dynamic>{
+                                              "currentEvent": tempEvents[index], "updateCurrentEvent": true});
                                           },
                                           child: const Text("Change")),
                                       TextButton(
                                           onPressed: () {
-                                            Navigator.of(context).pop();
-                                            Navigator.pushNamed(
-                                                context, "/addAppointments",
-                                                arguments: <String, dynamic>{
-                                                  "currentEvent":
-                                                      tempEvents[index],
-                                                  "updateCurrentEvent": false
-                                                });
+                                            Get.offAndToNamed("/addAppointments",arguments: <String, dynamic>{
+                                              "currentEvent": tempEvents[index], "updateCurrentEvent": false});
                                           },
                                           child: const Text("Copy")),
                                     ])
@@ -329,6 +316,7 @@ class _ListAppointmentState extends State<ListAppointment> {
                 //Show all 4 icons because more than 3 makes it invisible
                 type: BottomNavigationBarType.fixed,
                 //
+                unselectedItemColor: Colors.black,
                 selectedItemColor: Colors.black,
                 backgroundColor: Theme.of(context).colorScheme.inversePrimary,
                 iconSize: 30,

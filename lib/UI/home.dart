@@ -109,8 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
-  void setCurrentItem(
-      BuildContext context, EventViewModel eventViewModel, int index) {
+  void setCurrentItem(BuildContext context, EventViewModel eventViewModel, int index) {
     //Show Dialog variables
     setState(() {
       _selectedItem = index;
@@ -246,26 +245,14 @@ class _MyHomePageState extends State<MyHomePage> {
                                           child: const Text("Remove")),
                                       TextButton(
                                           onPressed: () {
-                                            Navigator.of(context).pop();
-                                            Navigator.pushNamed(
-                                                context, "/addAppointments",
-                                                arguments: <String, dynamic>{
-                                                  "currentEvent":
-                                                      clientsOnDay[index],
-                                                  "updateCurrentEvent": true
-                                                });
+                                            Get.offAndToNamed("/addAppointments",arguments: <String, dynamic>{
+                                              "currentEvent": clientsOnDay[index], "updateCurrentEvent": true});
                                           },
                                           child: const Text("Change")),
                                       TextButton(
                                           onPressed: () {
-                                            Navigator.of(context).pop();
-                                            Navigator.pushNamed(
-                                                context, "/addAppointments",
-                                                arguments: <String, dynamic>{
-                                                  "currentEvent":
-                                                      clientsOnDay[index],
-                                                  "updateCurrentEvent": false
-                                                });
+                                            Get.offAndToNamed("/addAppointments",arguments: <String, dynamic>{
+                                              "currentEvent": clientsOnDay[index], "updateCurrentEvent": false});
                                           },
                                           child: const Text("Copy")),
                                     ])
@@ -362,6 +349,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 //Show all 4 icons because more than 3 makes it invisible
                 type: BottomNavigationBarType.fixed,
                 //
+                unselectedItemColor: Colors.black,
                 selectedItemColor: Colors.black,
                 backgroundColor: Theme.of(context).colorScheme.inversePrimary,
                 iconSize: 30,

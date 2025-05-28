@@ -332,6 +332,7 @@ class _AddAppointmentState extends State<AddAppointment> {
                 //Show all 4 icons because more than 3 makes it invisible
                 type: BottomNavigationBarType.fixed,
                 //
+                unselectedItemColor: Colors.black,
                 selectedItemColor: Colors.black,
                 backgroundColor: Theme.of(context).colorScheme.inversePrimary,
                 iconSize: 30,
