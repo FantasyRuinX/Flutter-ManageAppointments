@@ -50,18 +50,28 @@ class MyApp extends StatelessWidget {
         GetPage(
             name: '/home',
             page: () => const MyHomePage(title: 'Appointments'),
+            preventDuplicates: true,
             transition: Transition.downToUp,
             transitionDuration: const Duration(milliseconds: 500),
             curve: Curves.easeInOut),
         GetPage(
             name: '/addAppointments',
             page: () => const AddAppointment(title: 'Manage appointments'),
+            preventDuplicates: true,
             transition: Transition.downToUp,
             transitionDuration: const Duration(milliseconds: 500),
             curve: Curves.easeInOut),
         GetPage(
             name: '/listAppointments',
             page: () => const ListAppointment(title: 'List appointments'),
+            preventDuplicates: true,
+            transition: Transition.downToUp,
+            transitionDuration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut),
+        GetPage(
+            name: '/analysisAppointments',
+            page: () => const ListAppointment(title: 'Analysis appointments'),
+            preventDuplicates: true,
             transition: Transition.downToUp,
             transitionDuration: const Duration(milliseconds: 500),
             curve: Curves.easeInOut),
