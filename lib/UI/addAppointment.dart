@@ -282,6 +282,15 @@ class _AddAppointmentState extends State<AddAppointment> {
                         SizedBox(
                             height: boxHeight,
                             width: boxWidth,
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              child: const Text(
+                                  textAlign: TextAlign.center,
+                                  "Set student email notification"),
+                            )),
+                        SizedBox(
+                            height: boxHeight,
+                            width: boxWidth,
                             child: TextField(
                                 controller: _textControllerAmount,
                                 keyboardType: TextInputType.number,
@@ -292,19 +301,6 @@ class _AddAppointmentState extends State<AddAppointment> {
                                     ),
                                     border: OutlineInputBorder(),
                                     hintText: "Enter payment amount"))),
-                        SizedBox(
-                            height: boxHeight,
-                            width: boxWidth,
-                            child: TextField(
-                                //controller: _textControllerAmount,
-                                //keyboardType: TextInputType.number,
-                                decoration: const InputDecoration(
-                                    contentPadding: EdgeInsets.symmetric(
-                                      vertical: 0.0,
-                                      horizontal: 5.0,
-                                    ),
-                                    border: OutlineInputBorder(),
-                                    hintText: "Enter client email"))),
                         SizedBox(
                             height: _screenSize.height * 0.15,
                             width: boxWidth,

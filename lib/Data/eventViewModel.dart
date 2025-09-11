@@ -13,6 +13,41 @@ class EventViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  List<Event> getCurrentWeeksEvents() {
+    final now = DateTime.now();
+    final nowMonday = now.subtract(Duration(days: now.weekday));
+    final nowSunday = nowMonday.add(const Duration(days: 6));
+
+    List<Event> dateList = [];
+
+    for (Event item in organisedEvents) {
+      List<String> times = item.date.split("-");
+      DateTime itemDate = DateTime(int.parse(times[0]),int.parse(times[1]),int.parse(times[2]));
+
+      if (itemDate.isAfter(nowMonday.subtract(const Duration(seconds: 1))) &&
+          itemDate.isBefore(nowSunday.add(const Duration(days: 1)))){
+        dateList.add(item);
+      }
+    }
+
+    return dateList;
+  }
+
+  Future<double> getTotalWeekAmount() async {
+    double total = 0.0;
+
+    for (Event item in getCurrentWeeksEvents()) {
+      try {
+        total += double.parse(item.rand);
+        print(item);
+      } catch (e) {
+        //Empty
+      }
+    }
+
+    return total;
+  }
+
   Future<void> writeDB({required Event userData}) async {
     clientDatabase.writeData(userData);
     notifyListeners();

@@ -42,8 +42,7 @@ class _ListAppointmentState extends State<ListAppointment> {
     });
   }
 
-  void setCurrentItem(
-      BuildContext context, EventViewModel eventViewModel, int index) {
+  void setCurrentItem(BuildContext context, EventViewModel eventViewModel, int index) {
     //Show Dialog variables
     setState(() {
       _selectedItem = index;
@@ -102,7 +101,7 @@ class _ListAppointmentState extends State<ListAppointment> {
                                       Radius.circular(4)),
                                   side: BorderSide(
                                       color:
-                                          Theme.of(context).colorScheme.primary,
+                                      Theme.of(context).colorScheme.primary,
                                       width: 3)),
                               title: Text(tempEvents[index].name),
                               content: Text(
@@ -268,7 +267,7 @@ class _ListAppointmentState extends State<ListAppointment> {
                                 style: TextStyle(fontSize: 17),
                                 "Please enter or click on client name")),
                         SizedBox(
-                            height: _screenSize.width * 0.1,
+                            height: _screenSize.height * 0.05,
                             width: _screenSize.width * 0.75,
                             child: TextField(
                                 controller: _txtClientName,

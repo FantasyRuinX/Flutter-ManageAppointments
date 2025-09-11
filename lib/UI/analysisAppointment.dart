@@ -19,6 +19,7 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
   final TextEditingController _txtClientName = TextEditingController();
   List<Event> _clientsData = [];
   final List<String> _clientNameList = [];
+  double _clientAmount = 0.0;
   String _selectedClient = "";
   int _selectedItem = 0;
   late Size _screenSize = MediaQuery.sizeOf(context);
@@ -30,10 +31,12 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
   }
 
   void loadClients() async {
-    final eventViewModel = Provider.of<EventViewModel>(context, listen: false);
-    await eventViewModel.readDB();
+    final model = Provider.of<EventViewModel>(context, listen: false);
+    await model.readDB();
+    _clientAmount = await model.getTotalWeekAmount();
+
     setState(() {
-      _clientsData = eventViewModel.organisedEvents;
+      _clientsData = model.organisedEvents;
 
       for (int index = 0; index < _clientsData.length; index++) {
         if (!_clientNameList.contains(_clientsData[index].name)) {
@@ -43,7 +46,8 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
     });
   }
 
-  void setCurrentItem(BuildContext context, EventViewModel eventViewModel, int index) {
+  void setCurrentItem(
+      BuildContext context, EventViewModel eventViewModel, int index) {
     //Show Dialog variables
     setState(() {
       _selectedItem = index;
@@ -65,10 +69,10 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
           child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                SizedBox(height: 20),
-                Text(style: TextStyle(fontSize: 17), "No Clients"),
-                SizedBox(height: 20)
-              ]));
+            SizedBox(height: 20),
+            Text(style: TextStyle(fontSize: 17), "No Clients"),
+            SizedBox(height: 20)
+          ]));
     }
 
     return ListView.builder(
@@ -76,19 +80,19 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
       itemCount: _clientNameList.length,
       itemBuilder: (BuildContext context, int index) {
         return TextButton(
-            style: ButtonStyle(
-                shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                    borderRadius:
-                    const BorderRadius.all(Radius.circular(4)),
-                    side: BorderSide(
-                        color: Theme.of(context).colorScheme.primary,
-                        width: 2))),
-                backgroundColor: WidgetStateProperty.all(
-                    Theme.of(context).colorScheme.inversePrimary)),
-            onPressed: () => setState(() {
-              _selectedClient = _clientNameList[index];
-            }),
-            child: Text(_clientNameList[index]))
+                style: ButtonStyle(
+                    shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(4)),
+                        side: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                            width: 2))),
+                    backgroundColor: WidgetStateProperty.all(
+                        Theme.of(context).colorScheme.inversePrimary)),
+                onPressed: () => setState(() {
+                      _selectedClient = _clientNameList[index];
+                    }),
+                child: Text(_clientNameList[index]))
             .animate(delay: (250 + (index * 100)).ms)
             .fadeIn()
             .slideY();
@@ -96,7 +100,42 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
     );
   }
 
+  Widget analysisChart() {
 
+    List<BarChartGroupData> weekData = [];
+
+    for (int i = 0; i < 7; i++){
+      weekData.add(BarChartGroupData(x: i, barRods: [BarChartRodData(borderRadius: BorderRadius.circular(4), width: 20, toY: (i + 1) * 2, color: Colors.blue)]));
+    }
+
+    return BarChart(BarChartData(
+      gridData: const FlGridData(show: false),
+      titlesData: FlTitlesData(
+        show: true,
+        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+          showTitles: true,
+          reservedSize: 30,
+          getTitlesWidget: (value, meta) {
+            Widget text = const Text("");
+            switch (value) {
+              case 0:text = const Text("Mon");break;
+              case 1:text = const Text("Tue");break;
+              case 2:text = const Text("Wed");break;
+              case 3:text = const Text("Thr");break;
+              case 4:text = const Text("Fri");break;
+              case 5:text = const Text("Sat");break;
+              case 6:text = const Text("Sun");break;
+            }
+            return SideTitleWidget(meta: meta, child: text);
+          },
+        )),
+      ),
+      maxY: 20,
+      barGroups: weekData,
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,53 +157,51 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
                         SizedBox(
-                            height: _screenSize.height * 0.05,
+                            height: _screenSize.height * 0.03,
                             child: const Text(
                                 style: TextStyle(fontSize: 17),
                                 "Please enter or click on client name")),
-                            SizedBox(
-                              width: _screenSize.width,
-                              height: _screenSize.height * 0.3,
-                              child : BarChart(BarChartData(
-                                maxY: 20,
-                                barGroups: [
-                                  BarChartGroupData(x: 0, barRods: [BarChartRodData(toY: 8, color: Colors.blue)]),
-                                  BarChartGroupData(x: 1, barRods: [BarChartRodData(toY: 10, color: Colors.blue)]),
-                                  BarChartGroupData(x: 2, barRods: [BarChartRodData(toY: 14, color: Colors.blue)]),
-                                  BarChartGroupData(x: 3, barRods: [BarChartRodData(toY: 15, color: Colors.blue)]),
-                                  BarChartGroupData(x: 4, barRods: [BarChartRodData(toY: 13, color: Colors.blue)]),
-                                ],
-                              ))
-                            ),
-                            SizedBox(height: _screenSize.height * 0.02),
-                            SizedBox(
-                                height: _screenSize.height * 0.05,
-                                child: const Text(
-                                    style: TextStyle(fontSize: 17),
-                                    "Total this week : ")),
-                            SizedBox(
-                                height: _screenSize.height * 0.05,
-                                width: _screenSize.width * 0.75,
-                                child: TextField(
-                                    controller: _txtClientName,
-                                    onSubmitted: (value) {
-                                      setState(() {
-                                        if (_clientNameList
-                                            .contains(_txtClientName.text)) {
-                                          _selectedClient = _txtClientName.text;
-                                        }
-                                      });
-                                    },
-                                    decoration: const InputDecoration(
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 0.0, horizontal: 5.0),
-                                        border: OutlineInputBorder(),
-                                        hintText: "Enter Client Name"))),
-                            SizedBox(height: _screenSize.height * 0.02),
-                            SizedBox(
-                                width: _screenSize.width,
-                                height: _screenSize.height * 0.25,
-                                child: appointmentNameList()),
+                        SizedBox(height: _screenSize.height * 0.02),
+                        SizedBox(
+                            width: _screenSize.width,
+                            height: _screenSize.height * 0.3,
+                            child: Center(child: analysisChart())),
+                        SizedBox(height: _screenSize.height * 0.02),
+                        SizedBox(
+                            height: _screenSize.height * 0.05,
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                spacing: _screenSize.width * 0.15,
+                                children: [
+                                  IconButton(onPressed: (){}, icon: const Icon(Icons.arrow_back))
+                                  ,Text(
+                                      style: const TextStyle(fontSize: 17),
+                                      "Total this week : $_clientAmount"),
+                                  IconButton(onPressed: (){}, icon: const Icon(Icons.arrow_forward))]
+                            )),
+                        SizedBox(
+                            height: _screenSize.height * 0.05,
+                            width: _screenSize.width * 0.75,
+                            child: TextField(
+                                controller: _txtClientName,
+                                onSubmitted: (value) {
+                                  setState(() {
+                                    if (_clientNameList
+                                        .contains(_txtClientName.text)) {
+                                      _selectedClient = _txtClientName.text;
+                                    }
+                                  });
+                                },
+                                decoration: const InputDecoration(
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 0.0, horizontal: 5.0),
+                                    border: OutlineInputBorder(),
+                                    hintText: "Enter Client Name"))),
+                        SizedBox(height: _screenSize.height * 0.02),
+                        SizedBox(
+                            width: _screenSize.width,
+                            height: _screenSize.height * 0.25,
+                            child: appointmentNameList()),
                       ]))),
               bottomNavigationBar: BottomNavigationBar(
                 items: const <BottomNavigationBarItem>[
@@ -182,8 +219,7 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
                 selectedItemColor: Colors.black,
                 backgroundColor: Theme.of(context).colorScheme.inversePrimary,
                 iconSize: 30,
-              )
-      ));
+              )));
     });
   }
 }
