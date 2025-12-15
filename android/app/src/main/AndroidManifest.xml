@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
@@ -31,7 +32,7 @@
         <service
             android:name="id.flutter.flutter_background_service.BackgroundService"
             android:exported="true"
-            android:foregroundServiceType="shortService"
+            android:foregroundServiceType="dataSync"
             tools:replace="android:exported" />
 
         <meta-data
