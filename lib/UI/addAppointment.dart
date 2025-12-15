@@ -16,6 +16,7 @@ class AddAppointment extends StatefulWidget {
 }
 
 class _AddAppointmentState extends State<AddAppointment> {
+  late EventViewModel eventViewModel;
   TimeOfDay _selectedTimeStart = TimeOfDay.now();
   TimeOfDay _selectedTimeEnd =
       TimeOfDay.fromDateTime(DateTime.now().add(const Duration(hours: 1)));
@@ -33,12 +34,16 @@ class _AddAppointmentState extends State<AddAppointment> {
   late Size _screenSize = MediaQuery.sizeOf(context);
 
   @override
+  void initState() {
+    super.initState();
+    eventViewModel = Provider.of<EventViewModel>(context, listen: false);
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    final Map<String, dynamic> args =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ??
-            {};
+    final Map<String, dynamic> args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
 
     setState(() {
       _currentEvent = args["currentEvent"] ?? null;
@@ -64,40 +69,6 @@ class _AddAppointmentState extends State<AddAppointment> {
             int.parse(dates[0]), int.parse(dates[1]), int.parse(dates[2]));
 
         _addedEvent = true;
-      }
-    });
-  }
-
-  void setCurrentItem(
-      BuildContext context, EventViewModel eventViewModel, int index) {
-    setState(() {
-      _selectedItem = index;
-      switch (_selectedItem) {
-        case 0:
-          if (_textControllerName.text.isNotEmpty &&
-              _textControllerLocation.text.isNotEmpty &&
-              _textControllerDescr.text.isNotEmpty) {
-            if (_textControllerAmount.text.isEmpty) {
-              _textControllerAmount.text = "0";
-            }
-
-            if (_currentEvent == null) {
-              addEvent(eventViewModel);
-            } else {
-              if (_updateCurrentEvent) {
-                updateEvent(eventViewModel);
-              } else {
-                addEvent(eventViewModel);
-              }
-            }
-
-            Get.offAndToNamed("/home");
-          }
-          break;
-
-        case 1:
-          Get.offAndToNamed("/home");
-          break;
       }
     });
   }
@@ -170,169 +141,196 @@ class _AddAppointmentState extends State<AddAppointment> {
     double boxWidth = _screenSize.width * 0.9;
     double boxHeight = _screenSize.height * 0.05;
 
-    return Consumer<EventViewModel>(builder: (context, eventViewModel, child) {
-      return SafeArea(
-          child: Scaffold(
-              appBar: AppBar(
-                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                centerTitle: true,
-                automaticallyImplyLeading: false,
-                title: Text(widget.title),
-              ),
-              body: SingleChildScrollView(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Center(
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          spacing: 25,
-                          children: <Widget>[
-                        SizedBox(height: _screenSize.height * 0.01),
-                        const Text(
-                            style: TextStyle(fontSize: 17),
-                            "Please enter all of the following information"),
-                        SizedBox(
-                            height: boxHeight,
-                            width: boxWidth,
-                            child: TextField(
-                                controller: _textControllerName,
-                                decoration: const InputDecoration(
-                                    contentPadding: EdgeInsets.symmetric(
-                                      vertical: 0.0,
-                                      horizontal: 5.0,
-                                    ),
-                                    border: OutlineInputBorder(),
-                                    hintText: "Enter client name"))),
-                        SizedBox(
-                            height: boxHeight,
-                            width: boxWidth,
-                            child: TextField(
-                                controller: _textControllerLocation,
-                                decoration: const InputDecoration(
-                                    contentPadding: EdgeInsets.symmetric(
-                                      vertical: 0.0,
-                                      horizontal: 5.0,
-                                    ),
-                                    border: OutlineInputBorder(),
-                                    hintText: "Enter location"))),
-                        SizedBox(
-                            height: _screenSize.height * 0.1,
-                            width: boxWidth,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              spacing: 20,
-                              children: <Widget>[
-                                ElevatedButton(
-                                  onPressed: () async {
-                                    _selectedTimeStart = (await showTimePicker(
-                                      context: context,
-                                      initialTime: _selectedTimeStart,
-                                      helpText: "Appointment will start at : ",
-                                      initialEntryMode:
-                                          TimePickerEntryMode.inputOnly,
-                                      builder: (BuildContext context,
-                                          Widget? child) {
-                                        return MediaQuery(
-                                          data: MediaQuery.of(context).copyWith(
-                                              alwaysUse24HourFormat: true),
-                                          child: child!,
-                                        );
-                                      },
-                                    ))!;
-                                    _selectedTimeEnd = (await showTimePicker(
-                                      context: context,
-                                      initialTime: _selectedTimeEnd,
-                                      helpText: "Appointment will end at : ",
-                                      initialEntryMode:
-                                          TimePickerEntryMode.inputOnly,
-                                      builder: (BuildContext context,
-                                          Widget? child) {
-                                        return MediaQuery(
-                                          data: MediaQuery.of(context).copyWith(
-                                              alwaysUse24HourFormat: true),
-                                          child: child!,
-                                        );
-                                      },
-                                    ))!;
-                                  },
-                                  child: Text(
-                                      textAlign: TextAlign.center,
-                                      "Set Duration\n${_selectedTimeStart.hour}:${_selectedTimeStart.minute.toString().padLeft(2, '0')} - ${_selectedTimeEnd.hour}:${_selectedTimeEnd.minute.toString().padLeft(2, '0')}"),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () async {
-                                    final DateTime? date = await showDatePicker(
-                                        context: context,
-                                        firstDate: DateTime.utc(2001, 1, 1),
-                                        lastDate: DateTime.utc(2100, 1, 1),
-                                        initialEntryMode:
-                                            DatePickerEntryMode.calendarOnly);
-
-                                    if (date != null) {
-                                      setState(() {
-                                        _selectedDate = date;
-                                      });
-                                    }
-                                  },
-                                  child: Text(
-                                      textAlign: TextAlign.center,
-                                      "Set Date\n${_selectedDate!.day} ${DateFormat.MMMM().format(_selectedDate!)}"),
-                                ),
-                              ],
-                            )),
-                        SizedBox(
-                            height: boxHeight,
-                            width: boxWidth,
-                            child: ElevatedButton(
-                              onPressed: () {},
-                              child: const Text(
-                                  textAlign: TextAlign.center,
-                                  "Set student email notification"),
-                            )),
-                        SizedBox(
-                            height: boxHeight,
-                            width: boxWidth,
-                            child: TextField(
-                                controller: _textControllerAmount,
-                                keyboardType: TextInputType.number,
-                                decoration: const InputDecoration(
-                                    contentPadding: EdgeInsets.symmetric(
-                                      vertical: 0.0,
-                                      horizontal: 5.0,
-                                    ),
-                                    border: OutlineInputBorder(),
-                                    hintText: "Enter payment amount"))),
-                        SizedBox(
-                            height: _screenSize.height * 0.15,
-                            width: boxWidth,
-                            child: TextField(
-                              controller: _textControllerDescr,
-                              keyboardType: TextInputType.multiline,
-                              maxLines: 3,
+    return SafeArea(
+        child: Scaffold(
+            appBar: AppBar(
+              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+              centerTitle: true,
+              automaticallyImplyLeading: false,
+              title: Text(widget.title),
+            ),
+            body: SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Center(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        spacing: 25,
+                        children: <Widget>[
+                      SizedBox(height: _screenSize.height * 0.01),
+                      const Text(
+                          style: TextStyle(fontSize: 17),
+                          "Please enter all of the following information"),
+                      SizedBox(
+                          height: boxHeight,
+                          width: boxWidth,
+                          child: TextField(
+                              controller: _textControllerName,
                               decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.symmetric(
                                     vertical: 0.0,
                                     horizontal: 5.0,
                                   ),
                                   border: OutlineInputBorder(),
-                                  hintText: "Enter appointment description"),
-                            )),
-                      ]))),
-              bottomNavigationBar: BottomNavigationBar(
-                items: const <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add"),
-                  BottomNavigationBarItem(
-                      icon: Icon(Icons.arrow_back), label: "Back"),
-                ],
-                currentIndex: _selectedItem,
-                onTap: (i) => setCurrentItem(context, eventViewModel, i),
-                //Show all 4 icons because more than 3 makes it invisible
-                type: BottomNavigationBarType.fixed,
-                //
-                unselectedItemColor: Colors.black,
-                selectedItemColor: Colors.black,
-                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                iconSize: 30,
-              )));
-    });
+                                  hintText: "Enter client name"))),
+                      SizedBox(
+                          height: boxHeight,
+                          width: boxWidth,
+                          child: TextField(
+                              controller: _textControllerLocation,
+                              decoration: const InputDecoration(
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: 0.0,
+                                    horizontal: 5.0,
+                                  ),
+                                  border: OutlineInputBorder(),
+                                  hintText: "Enter location"))),
+                      SizedBox(
+                          height: _screenSize.height * 0.1,
+                          width: boxWidth,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            spacing: 20,
+                            children: <Widget>[
+                              ElevatedButton(
+                                onPressed: () async {
+                                  _selectedTimeStart = (await showTimePicker(
+                                    context: context,
+                                    initialTime: _selectedTimeStart,
+                                    helpText: "Appointment will start at : ",
+                                    initialEntryMode:
+                                        TimePickerEntryMode.inputOnly,
+                                    builder: (BuildContext context,
+                                        Widget? child) {
+                                      return MediaQuery(
+                                        data: MediaQuery.of(context).copyWith(
+                                            alwaysUse24HourFormat: true),
+                                        child: child!,
+                                      );
+                                    },
+                                  ))!;
+                                  _selectedTimeEnd = (await showTimePicker(
+                                    context: context,
+                                    initialTime: _selectedTimeEnd,
+                                    helpText: "Appointment will end at : ",
+                                    initialEntryMode:
+                                        TimePickerEntryMode.inputOnly,
+                                    builder: (BuildContext context,
+                                        Widget? child) {
+                                      return MediaQuery(
+                                        data: MediaQuery.of(context).copyWith(
+                                            alwaysUse24HourFormat: true),
+                                        child: child!,
+                                      );
+                                    },
+                                  ))!;
+                                },
+                                child: Text(
+                                    textAlign: TextAlign.center,
+                                    "Set Duration\n${_selectedTimeStart.hour}:${_selectedTimeStart.minute.toString().padLeft(2, '0')} - ${_selectedTimeEnd.hour}:${_selectedTimeEnd.minute.toString().padLeft(2, '0')}"),
+                              ),
+                              ElevatedButton(
+                                onPressed: () async {
+                                  final DateTime? date = await showDatePicker(
+                                      context: context,
+                                      firstDate: DateTime.utc(2001, 1, 1),
+                                      lastDate: DateTime.utc(2100, 1, 1),
+                                      initialEntryMode:
+                                          DatePickerEntryMode.calendarOnly);
+
+                                  if (date != null) {
+                                    setState(() {
+                                      _selectedDate = date;
+                                    });
+                                  }
+                                },
+                                child: Text(
+                                    textAlign: TextAlign.center,
+                                    "Set Date\n${_selectedDate!.day} ${DateFormat.MMMM().format(_selectedDate!)}"),
+                              ),
+                            ],
+                          )),
+                      SizedBox(
+                          height: boxHeight,
+                          width: boxWidth,
+                          child: ElevatedButton(
+                            onPressed: () {},
+                            child: const Text(
+                                textAlign: TextAlign.center,
+                                "Set student email notification"),
+                          )),
+                      SizedBox(
+                          height: boxHeight,
+                          width: boxWidth,
+                          child: TextField(
+                              controller: _textControllerAmount,
+                              keyboardType: TextInputType.number,
+                              decoration: const InputDecoration(
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: 0.0,
+                                    horizontal: 5.0,
+                                  ),
+                                  border: OutlineInputBorder(),
+                                  hintText: "Enter payment amount"))),
+                      SizedBox(
+                          height: _screenSize.height * 0.15,
+                          width: boxWidth,
+                          child: TextField(
+                            controller: _textControllerDescr,
+                            keyboardType: TextInputType.multiline,
+                            maxLines: 3,
+                            decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(
+                                  vertical: 0.0,
+                                  horizontal: 5.0,
+                                ),
+                                border: OutlineInputBorder(),
+                                hintText: "Enter appointment description"),
+                          )),
+                    ]))),
+            bottomNavigationBar: bottomBarOptions()));
+  }
+
+  Widget bottomBarOptions(){
+    void setCurrentItem(BuildContext context, EventViewModel eventViewModel, int index) {
+      setState(() {
+        _selectedItem = index;
+        switch (_selectedItem) {
+          case 0:
+            if (_textControllerName.text.isNotEmpty && _textControllerLocation.text.isNotEmpty &&
+                _textControllerDescr.text.isNotEmpty) {
+              if (_textControllerAmount.text.isEmpty) {_textControllerAmount.text = "0";}
+
+              if (_currentEvent == null) {addEvent(eventViewModel);}
+              else {
+                if (_updateCurrentEvent) {updateEvent(eventViewModel);}
+                else{addEvent(eventViewModel);}
+              }
+
+              Get.offAndToNamed("/home");
+            }
+            break;
+
+          case 1:Get.offAndToNamed("/home");break;
+        }
+      });
+    }
+
+    return BottomNavigationBar(
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add"),
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+        //BottomNavigationBarItem(icon: Icon(Icons.message), label: "Test Send message via Whatsapp"),
+      ],
+      currentIndex: _selectedItem,
+      onTap: (i) => setCurrentItem(context, eventViewModel, i),
+      //Show all 4 icons because more than 3 makes it invisible
+      type: BottomNavigationBarType.fixed,
+      //
+      elevation: 0,
+      unselectedItemColor: Colors.black,
+      selectedItemColor: Colors.black,
+      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      iconSize: 30,
+    );
   }
 }

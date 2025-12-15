@@ -14,17 +14,12 @@ import 'package:device_preview/device_preview.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Permission.notification.isDenied
-      .then((value) => Permission.notification.request());
+  await Permission.notification.isDenied.then((value) => Permission.notification.request());
   await initiateBackgroundService();
-  await FlutterBackgroundService().startService();
-  FlutterBackgroundService().invoke("startBackgroundService");
 
   runApp(DevicePreview(
       builder: (context) => MultiProvider(
-            providers: [
-              ChangeNotifierProvider(create: (_) => EventViewModel())
-            ],
+            providers: [ChangeNotifierProvider(create: (_) => EventViewModel())],
             child: const MyApp(),
           )));
 }

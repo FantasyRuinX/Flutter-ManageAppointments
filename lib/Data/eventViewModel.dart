@@ -40,8 +40,8 @@ class EventViewModel extends ChangeNotifier {
       try {
         total += double.parse(item.rand);
         print(item);
-      } catch (e) {
-        //Empty
+      } catch (err) {
+        print('getTotalWeekAmount : $err');
       }
     }
 
@@ -58,8 +58,7 @@ class EventViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateEventDB(
-      {required Event userDataOld, required Event userDataNew}) async {
+  Future<void> updateEventDB({required Event userDataOld, required Event userDataNew}) async {
     clientDatabase.updateEvent(userDataOld, userDataNew);
     notifyListeners();
   }

@@ -8,7 +8,6 @@ class Event {
   final String info;
   final String location;
   //final String payed;
-  //final String email;
 
   Event({
     required this.id,
@@ -20,7 +19,6 @@ class Event {
     required this.info,
     required this.location,
     //required this.payed,
-    //required this.email,
   });
 
   Event.fromJson(Map<String, dynamic> jsonMap)
@@ -34,7 +32,6 @@ class Event {
             info: jsonMap['info'],
             location: jsonMap['location']//,
             //payed: jsonMap['payed'].toString().toLowerCase(),
-            //email: jsonMap['email']
   );
 
   Map<String, Object?> toJson() {
@@ -47,7 +44,6 @@ class Event {
       'info': info.toString(),
       'location': location.toString(),
       //'payed': payed.toString().toLowerCase(),
-      //'email': email.toString(),
     };
   }
 
@@ -65,8 +61,7 @@ class Event {
         other.date == date &&
         other.rand == rand &&
         other.info == info &&
-        other.location == location;// &&
-        //other.email == email
+        other.location == location;
   }
 
   @override
@@ -76,6 +71,5 @@ class Event {
       date.hashCode ^
       rand.hashCode ^
       info.hashCode ^
-      location.hashCode;// ^
-      //email.hashCode;
+      location.hashCode;
 }

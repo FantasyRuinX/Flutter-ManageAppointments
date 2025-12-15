@@ -15,21 +15,23 @@ class ListAppointment extends StatefulWidget {
 }
 
 class _ListAppointmentState extends State<ListAppointment> {
+  late EventViewModel eventViewModel;
+  late Size _screenSize;
+
   final TextEditingController _txtClientName = TextEditingController();
   List<Event> _clientsData = [];
   final List<String> _clientNameList = [];
   String _selectedClient = "";
   int _selectedItem = 0;
-  late Size _screenSize = MediaQuery.sizeOf(context);
 
   @override
   void initState() {
     super.initState();
+    eventViewModel = Provider.of<EventViewModel>(context, listen: false);
     loadClients();
   }
 
   void loadClients() async {
-    final eventViewModel = Provider.of<EventViewModel>(context, listen: false);
     await eventViewModel.readDB();
     setState(() {
       _clientsData = eventViewModel.organisedEvents;
@@ -38,22 +40,6 @@ class _ListAppointmentState extends State<ListAppointment> {
         if (!_clientNameList.contains(_clientsData[index].name)) {
           _clientNameList.add(_clientsData[index].name);
         }
-      }
-    });
-  }
-
-  void setCurrentItem(BuildContext context, EventViewModel eventViewModel, int index) {
-    //Show Dialog variables
-    setState(() {
-      _selectedItem = index;
-
-      switch (_selectedItem) {
-        case 0:
-          Get.offAndToNamed("/analysisAppointments");
-          break;
-        case 1:
-          Get.offAndToNamed("/home");
-          break;
       }
     });
   }
@@ -246,80 +232,95 @@ class _ListAppointmentState extends State<ListAppointment> {
   Widget build(BuildContext context) {
     _screenSize = MediaQuery.sizeOf(context);
 
-    return Consumer<EventViewModel>(builder: (context, eventViewModel, child) {
-      return SafeArea(
-          child: Scaffold(
-              appBar: AppBar(
-                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                centerTitle: true,
-                automaticallyImplyLeading: false,
-                title: Text(widget.title),
-              ),
-              body: SingleChildScrollView(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Center(
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                        SizedBox(
-                            height: _screenSize.height * 0.05,
-                            child: const Text(
-                                style: TextStyle(fontSize: 17),
-                                "Please enter or click on client name")),
-                        SizedBox(
-                            height: _screenSize.height * 0.05,
-                            width: _screenSize.width * 0.75,
-                            child: TextField(
-                                controller: _txtClientName,
-                                onSubmitted: (value) {
-                                  setState(() {
-                                    if (_clientNameList
-                                        .contains(_txtClientName.text)) {
-                                      _selectedClient = _txtClientName.text;
-                                    }
-                                  });
-                                },
-                                decoration: const InputDecoration(
-                                    contentPadding: EdgeInsets.symmetric(
-                                        vertical: 0.0, horizontal: 5.0),
-                                    border: OutlineInputBorder(),
-                                    hintText: "Enter Client Name"))),
-                        SizedBox(height: _screenSize.height * 0.02),
-                        SizedBox(
-                            width: _screenSize.width,
-                            height: _screenSize.height * 0.25,
-                            child: appointmentNameList()),
-                        SizedBox(
-                            height: _screenSize.height * 0.05,
-                            child: Center(
-                                child: Text(
-                                    style: const TextStyle(fontSize: 17),
-                                    _selectedClient.isEmpty
-                                        ? "No Selected Clients"
-                                        : "Selected Client : $_selectedClient"))),
-                        SizedBox(
-                            width: _screenSize.width,
-                            height: _screenSize.height * 0.3,
-                            child: appointmentList(eventViewModel)),
-                      ]))),
-              bottomNavigationBar: BottomNavigationBar(
-                items: const <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(
-                      icon: Icon(Icons.stacked_bar_chart),
-                      label: "Payment Analytics"),
-                  BottomNavigationBarItem(
-                      icon: Icon(Icons.arrow_back), label: "Back"),
-                ],
-                currentIndex: _selectedItem,
-                onTap: (i) => setCurrentItem(context, eventViewModel, i),
-                //Show all 4 icons because more than 3 makes it invisible
-                type: BottomNavigationBarType.fixed,
-                //
-                unselectedItemColor: Colors.black,
-                selectedItemColor: Colors.black,
-                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                iconSize: 30,
-              )));
-    });
+    return SafeArea(
+        child: Scaffold(
+            appBar: AppBar(
+              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+              centerTitle: true,
+              automaticallyImplyLeading: false,
+              title: Text(widget.title),
+            ),
+            body: SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Center(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                      SizedBox(
+                          height: _screenSize.height * 0.05,
+                          child: const Text(
+                              style: TextStyle(fontSize: 17),
+                              "Please enter or click on client name")),
+                      SizedBox(
+                          height: _screenSize.height * 0.05,
+                          width: _screenSize.width * 0.75,
+                          child: TextField(
+                              controller: _txtClientName,
+                              onSubmitted: (value) {
+                                setState(() {
+                                  if (_clientNameList
+                                      .contains(_txtClientName.text)) {
+                                    _selectedClient = _txtClientName.text;
+                                  }
+                                });
+                              },
+                              decoration: const InputDecoration(
+                                  contentPadding: EdgeInsets.symmetric(
+                                      vertical: 0.0, horizontal: 5.0),
+                                  border: OutlineInputBorder(),
+                                  hintText: "Enter Client Name"))),
+                      SizedBox(height: _screenSize.height * 0.02),
+                      SizedBox(
+                          width: _screenSize.width,
+                          height: _screenSize.height * 0.25,
+                          child: appointmentNameList()),
+                      SizedBox(
+                          height: _screenSize.height * 0.05,
+                          child: Center(
+                              child: Text(
+                                  style: const TextStyle(fontSize: 17),
+                                  _selectedClient.isEmpty
+                                      ? "No Selected Clients"
+                                      : "Selected Client : $_selectedClient"))),
+                      SizedBox(
+                          width: _screenSize.width,
+                          height: _screenSize.height * 0.3,
+                          child: appointmentList(eventViewModel)),
+                    ]))),
+            bottomNavigationBar: bottomBarOptions()));
   }
+
+  Widget bottomBarOptions(){
+
+    void setCurrentItem(BuildContext context, EventViewModel eventViewModel, int index) {
+      //Show Dialog variables
+      setState(() {
+        _selectedItem = index;
+        switch (_selectedItem) {
+          case 0:Get.offAndToNamed("/addAppointments",arguments: <String, dynamic>{"updateEvent": null});break;
+          case 1:Get.offAndToNamed("/home");break;
+          case 2:Get.offAndToNamed("/analysisAppointments");break;
+        }
+      });
+    }
+
+    return BottomNavigationBar(
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add"),
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+        BottomNavigationBarItem(icon: Icon(Icons.stacked_bar_chart), label: "Statistics")
+      ],
+      currentIndex: _selectedItem,
+      onTap: (i) => setCurrentItem(context, eventViewModel, i),
+      //Show all 4 icons because more than 3 makes it invisible
+      type: BottomNavigationBarType.fixed,
+      //
+      elevation: 0,
+      unselectedItemColor: Colors.black,
+      selectedItemColor: Colors.black,
+      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      iconSize: 30,
+    );
+  }
+
 }

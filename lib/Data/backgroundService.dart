@@ -15,9 +15,17 @@ FlutterLocalNotificationsPlugin();
 Future<void> initiateBackgroundService() async {
   final service = FlutterBackgroundService();
   await service.configure(
-      iosConfiguration: IosConfiguration(),
-      androidConfiguration: AndroidConfiguration(
-          onStart: onStart, isForegroundMode: true, autoStart: true));
+    iosConfiguration: IosConfiguration(),
+    androidConfiguration: AndroidConfiguration(
+      onStart: onStart,
+      isForegroundMode: true,
+      autoStart: true,
+      initialNotificationTitle: 'Manage Appointments',
+      initialNotificationContent: 'Checking appointments...',
+      foregroundServiceNotificationId: 888,
+    ),
+  );
+
 }
 
 void showNotification(String title, String content) {
@@ -75,9 +83,11 @@ void onStart(ServiceInstance service) async {
   DartPluginRegistrant.ensureInitialized();
 
   if (service is AndroidServiceInstance) {
-    service.on("startBackgroundService").listen((event) {
-      service.setAsBackgroundService();
-    });
+    // 🔴 THIS IS MANDATORY
+    await service.setForegroundNotificationInfo(
+      title: "Manage Appointments",
+      content: "Service running",
+    );
   }
 
   service.on("stopService").listen((event) {
@@ -85,5 +95,4 @@ void onStart(ServiceInstance service) async {
   });
 
   timerNotification(service);
-
 }
