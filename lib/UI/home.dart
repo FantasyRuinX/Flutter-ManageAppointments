@@ -198,15 +198,13 @@ class _MyHomePageState extends State<MyHomePage> {
           headerStyle: const HeaderStyle(
               titleCentered: true,
               formatButtonVisible: false),
-          calendarStyle: const CalendarStyle(
-              todayTextStyle: TextStyle(color: Colors.black),
+          calendarStyle: CalendarStyle(
+              todayTextStyle: const TextStyle(color: Colors.black),
               selectedTextStyle:
-              TextStyle(color: Colors.black),
+              const TextStyle(color: Colors.black),
               selectedDecoration: BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  border: Border(
-                      bottom: BorderSide(
-                          color: Colors.indigo, width: 4)))),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.indigo, width: 2))),
 
           //Show selected date
           selectedDayPredicate: (day) =>
