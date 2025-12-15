@@ -13,8 +13,7 @@ class EventViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<Event> getCurrentWeeksEvents() {
-    final now = DateTime.now();
+  List<Event> _getCurrentWeeksEvents(DateTime now) {
     final nowMonday = now.subtract(Duration(days: now.weekday));
     final nowSunday = nowMonday.add(const Duration(days: 6));
 
@@ -33,19 +32,19 @@ class EventViewModel extends ChangeNotifier {
     return dateList;
   }
 
-  Future<double> getTotalWeekAmount() async {
-    double total = 0.0;
+  Future<List<double>> getCurrentWeekAmounts(DateTime now) async {
+    List<double> values = [];
 
-    for (Event item in getCurrentWeeksEvents()) {
+    for (Event item in _getCurrentWeeksEvents(now)) {
       try {
-        total += double.parse(item.rand);
+        values.add(double.parse(item.rand));
         print(item);
       } catch (err) {
         print('getTotalWeekAmount : $err');
       }
     }
 
-    return total;
+    return values;
   }
 
   Future<void> writeDB({required Event userData}) async {

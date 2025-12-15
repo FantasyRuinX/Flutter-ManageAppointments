@@ -22,6 +22,7 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
   List<Event> _clientsData = [];
   final List<String> _clientNameList = [];
   double _clientAmount = 0.0;
+  List<double> _currentWeeksAmount = [];
   String _selectedClient = "";
   int _selectedItem = 0;
   late Size _screenSize = MediaQuery.sizeOf(context);
@@ -36,7 +37,8 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
   void loadClients() async {
     final model = Provider.of<EventViewModel>(context, listen: false);
     await model.readDB();
-    _clientAmount = await model.getTotalWeekAmount();
+    _clientAmount = 12334;
+    _currentWeeksAmount = await model.getCurrentWeekAmounts(DateTime.now());
 
     setState(() {
       _clientsData = model.organisedEvents;
@@ -107,7 +109,15 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
     List<BarChartGroupData> weekData = [];
 
     for (int i = 0; i < 7; i++){
-      weekData.add(BarChartGroupData(x: i, barRods: [BarChartRodData(borderRadius: BorderRadius.circular(4), width: 20, toY: (i + 1) * 2, color: Colors.blue)]));
+      if (_currentWeeksAmount.length < 7){_currentWeeksAmount.add(0.0);}
+      weekData.add(
+          BarChartGroupData(
+              x: i,
+              barRods: [BarChartRodData(
+                  borderRadius: BorderRadius.circular(4),
+                  width: 20,
+                  toY: _currentWeeksAmount[i],
+                  color: Colors.blue)]));
     }
 
     return BarChart(BarChartData(
@@ -120,21 +130,12 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
           showTitles: true,
           reservedSize: 30,
           getTitlesWidget: (value, meta) {
-            Widget text = const Text("");
-            switch (value) {
-              case 0:text = const Text("Mon");break;
-              case 1:text = const Text("Tue");break;
-              case 2:text = const Text("Wed");break;
-              case 3:text = const Text("Thr");break;
-              case 4:text = const Text("Fri");break;
-              case 5:text = const Text("Sat");break;
-              case 6:text = const Text("Sun");break;
-            }
-            return SideTitleWidget(meta: meta, child: text);
+            List<String> weekNames = ["Mon","Tue","Wed","Thr","Fri","Sat","Sun"];
+            return SideTitleWidget(meta: meta, child: Text(weekNames[value.toInt()]));
           },
         )),
       ),
-      maxY: 20,
+      maxY: 40,
       barGroups: weekData,
     ));
   }
