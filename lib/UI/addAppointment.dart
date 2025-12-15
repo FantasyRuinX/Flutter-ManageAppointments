@@ -141,8 +141,7 @@ class _AddAppointmentState extends State<AddAppointment> {
     double boxWidth = _screenSize.width * 0.9;
     double boxHeight = _screenSize.height * 0.05;
 
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
             appBar: AppBar(
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               centerTitle: true,
@@ -287,7 +286,7 @@ class _AddAppointmentState extends State<AddAppointment> {
                                 hintText: "Enter appointment description"),
                           )),
                     ]))),
-            bottomNavigationBar: bottomBarOptions()));
+            bottomNavigationBar: bottomBarOptions());
   }
 
   Widget bottomBarOptions(){

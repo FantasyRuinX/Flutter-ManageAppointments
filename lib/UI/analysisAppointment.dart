@@ -144,8 +144,7 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
   Widget build(BuildContext context) {
     _screenSize = MediaQuery.sizeOf(context);
 
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
             appBar: AppBar(
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               centerTitle: true,
@@ -218,6 +217,6 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
               selectedItemColor: Colors.black,
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               iconSize: 30,
-            )));
+            ));
   }
 }

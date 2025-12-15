@@ -232,8 +232,7 @@ class _ListAppointmentState extends State<ListAppointment> {
   Widget build(BuildContext context) {
     _screenSize = MediaQuery.sizeOf(context);
 
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
             appBar: AppBar(
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               centerTitle: true,
@@ -287,7 +286,7 @@ class _ListAppointmentState extends State<ListAppointment> {
                           height: _screenSize.height * 0.3,
                           child: appointmentList(eventViewModel)),
                     ]))),
-            bottomNavigationBar: bottomBarOptions()));
+            bottomNavigationBar: bottomBarOptions());
   }
 
   Widget bottomBarOptions(){
