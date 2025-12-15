@@ -193,8 +193,8 @@ class _MyHomePageState extends State<MyHomePage> {
     return TableCalendar(
           shouldFillViewport: true,
           focusedDay: _focusedDate,
-          firstDay: DateTime.utc(2001, 1, 1),
-          lastDay: DateTime.utc(2100, 1, 1),
+          firstDay: DateTime.now().subtract(const Duration(days: 365 * 50)),
+          lastDay: DateTime.now().add(const Duration(days: 365 * 50)),
           headerStyle: const HeaderStyle(
               titleCentered: true,
               formatButtonVisible: false),
