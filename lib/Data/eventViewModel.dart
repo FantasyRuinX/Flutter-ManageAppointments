@@ -16,6 +16,11 @@ class EventViewModel extends ChangeNotifier {
   List<Event> _getCurrentWeeksEvents(DateTime now) {
     final nowMonday = now.subtract(Duration(days: now.weekday));
     final nowSunday = nowMonday.add(const Duration(days: 6));
+    final emptyItem = Event(
+        id: -1, name: "",
+        start: "", end: "",
+        date: "", rand: "0.0",
+        info: "", location: "");
 
     List<Event> dateList = [];
 
@@ -26,6 +31,8 @@ class EventViewModel extends ChangeNotifier {
       if (itemDate.isAfter(nowMonday.subtract(const Duration(seconds: 1))) &&
           itemDate.isBefore(nowSunday.add(const Duration(days: 1)))){
         dateList.add(item);
+      }else{
+        dateList.add(emptyItem);
       }
     }
 

@@ -198,17 +198,16 @@ class _MyHomePageState extends State<MyHomePage> {
           headerStyle: const HeaderStyle(
               titleCentered: true,
               formatButtonVisible: false),
+
           calendarStyle: CalendarStyle(
               todayTextStyle: const TextStyle(color: Colors.black),
-              selectedTextStyle:
-              const TextStyle(color: Colors.black),
+              selectedTextStyle: const TextStyle(color: Colors.black),
               selectedDecoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.indigo, width: 2))),
 
           //Show selected date
-          selectedDayPredicate: (day) =>
-              isSameDay(_selectedDate, day),
+          selectedDayPredicate: (day) => isSameDay(_selectedDate, day),
 
           onDaySelected: (selectedDay, focusedDay) async {
             if (!isSameDay(_selectedDate, selectedDay)) {
@@ -222,8 +221,7 @@ class _MyHomePageState extends State<MyHomePage> {
           },
           //----------------
 
-          eventLoader: (day) => _clientDates
-              .contains(day.toString().split(" ")[0]) ? [1] : [],
+          eventLoader: (day) => _clientDates.contains(day.toString().split(" ")[0]) ? [1] : [],
         );
   }
 

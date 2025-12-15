@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:Flutter_ManageAppointments/Data/eventViewModel.dart';
 import 'package:get/get.dart';
 import '../Data/eventModel.dart';
+import 'package:intl/intl.dart';
 
 class AnalysisAppointment extends StatefulWidget {
   final String title;
@@ -22,7 +23,12 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
   List<Event> _clientsData = [];
   final List<String> _clientNameList = [];
   double _clientAmount = 0.0;
+
+  DateTime _currentWeekDateAmount = DateTime.now();
+  DateTime nowMonday = DateTime.now();
+  DateTime nowSunday = DateTime.now();
   List<double> _currentWeeksAmount = [];
+
   String _selectedClient = "";
   int _selectedItem = 0;
   late Size _screenSize = MediaQuery.sizeOf(context);
@@ -35,13 +41,11 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
   }
 
   void loadClients() async {
-    final model = Provider.of<EventViewModel>(context, listen: false);
-    await model.readDB();
-    _clientAmount = 12334;
-    _currentWeeksAmount = await model.getCurrentWeekAmounts(DateTime.now());
+    await eventViewModel.readDB();
+    setChartData();
 
     setState(() {
-      _clientsData = model.organisedEvents;
+      _clientsData = eventViewModel.organisedEvents;
 
       for (int index = 0; index < _clientsData.length; index++) {
         if (!_clientNameList.contains(_clientsData[index].name)) {
@@ -49,6 +53,20 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
         }
       }
     });
+  }
+
+  void setChartData() async {
+    _currentWeeksAmount = await eventViewModel.getCurrentWeekAmounts(_currentWeekDateAmount);
+    nowMonday = _currentWeekDateAmount.subtract(Duration(days: _currentWeekDateAmount.weekday));
+    nowSunday = nowMonday.add(const Duration(days: 6));
+
+    setState(() {
+      _clientAmount = _currentWeeksAmount.fold(0.0, (a,b) => a + b);
+    });
+  }
+
+  String dateToString(DateTime date){
+    return DateFormat('dd MMM yy').format(date);
   }
 
   void setCurrentItem(BuildContext context, EventViewModel eventViewModel, int index) {
@@ -167,19 +185,27 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
                           width: _screenSize.width,
                           height: _screenSize.height * 0.3,
                           child: Center(child: analysisChart())),
-                      SizedBox(height: _screenSize.height * 0.02),
+                      SizedBox(height: _screenSize.height * 0.01),
                       SizedBox(
                           height: _screenSize.height * 0.05,
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              spacing: _screenSize.width * 0.15,
+                              spacing: _screenSize.width * 0.075,
                               children: [
-                                IconButton(onPressed: (){}, icon: const Icon(Icons.arrow_back))
+                                IconButton(onPressed: (){
+                                  _currentWeekDateAmount = _currentWeekDateAmount.subtract(Duration(days: 7));
+                                  setChartData();
+                                }, icon: const Icon(Icons.arrow_back))
                                 ,Text(
+                                    textAlign: TextAlign.center,
                                     style: const TextStyle(fontSize: 17),
-                                    "Total this week : $_clientAmount"),
-                                IconButton(onPressed: (){}, icon: const Icon(Icons.arrow_forward))]
+                                    "${dateToString(nowMonday)} - ${dateToString(nowSunday)}\nR$_clientAmount"),
+                                IconButton(onPressed: (){
+                                  _currentWeekDateAmount = _currentWeekDateAmount.add(Duration(days: 7));
+                                  setChartData();
+                                }, icon: const Icon(Icons.arrow_forward))]
                           )),
+                      SizedBox(height: _screenSize.height * 0.01),
                       SizedBox(
                           height: _screenSize.height * 0.05,
                           width: _screenSize.width * 0.75,
@@ -204,19 +230,40 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
                           height: _screenSize.height * 0.25,
                           child: appointmentNameList()),
                     ]))),
-            bottomNavigationBar: BottomNavigationBar(
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.home), label: "Home"),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.arrow_back), label: "Back"),
-              ],
-              currentIndex: _selectedItem,
-              onTap: (i) => setCurrentItem(context, eventViewModel, i),
-              unselectedItemColor: Colors.black,
-              selectedItemColor: Colors.black,
-              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-              iconSize: 30,
-            ));
+            bottomNavigationBar: bottomBarOptions());
   }
+
+  Widget bottomBarOptions(){
+
+    void setCurrentItem(BuildContext context, EventViewModel eventViewModel, int index) {
+      //Show Dialog variables
+      setState(() {
+        _selectedItem = index;
+        switch (_selectedItem) {
+          case 0:Get.offAndToNamed("/addAppointments",arguments: <String, dynamic>{"updateEvent": null});break;
+          case 1:Get.offAndToNamed("/home");break;
+          case 2:Get.offAndToNamed("/listAppointments");break;
+        }
+      });
+    }
+
+    return BottomNavigationBar(
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add"),
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: "Clients")
+      ],
+      currentIndex: _selectedItem,
+      onTap: (i) => setCurrentItem(context, eventViewModel, i),
+      //Show all 4 icons because more than 3 makes it invisible
+      type: BottomNavigationBarType.fixed,
+      //
+      elevation: 0,
+      unselectedItemColor: Colors.black,
+      selectedItemColor: Colors.black,
+      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      iconSize: 30,
+    );
+  }
+
 }

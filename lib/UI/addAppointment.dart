@@ -310,15 +310,16 @@ class _AddAppointmentState extends State<AddAppointment> {
             break;
 
           case 1:Get.offAndToNamed("/home");break;
+          case 2:Get.offAndToNamed("/listAppointments");break;
         }
       });
     }
 
     return BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add"),
+        BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add Appointment"),
         BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-        //BottomNavigationBarItem(icon: Icon(Icons.message), label: "Test Send message via Whatsapp"),
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: "Clients"),
       ],
       currentIndex: _selectedItem,
       onTap: (i) => setCurrentItem(context, eventViewModel, i),
