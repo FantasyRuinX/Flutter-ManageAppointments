@@ -82,14 +82,6 @@ void timerNotification(ServiceInstance service){
 void onStart(ServiceInstance service) async {
   DartPluginRegistrant.ensureInitialized();
 
-  if (service is AndroidServiceInstance) {
-    // 🔴 THIS IS MANDATORY
-    await service.setForegroundNotificationInfo(
-      title: "Manage Appointments",
-      content: "Service running",
-    );
-  }
-
   service.on("stopService").listen((event) {
     service.stopSelf();
   });

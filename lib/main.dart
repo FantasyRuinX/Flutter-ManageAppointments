@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
             name: '/home',
             page: () => const MyHomePage(title: 'Appointments'),
             preventDuplicates: true,
-            transition: Transition.zoom,
+            transition: Transition.downToUp,
             transitionDuration: const Duration(milliseconds: 500),
             curve: Curves.easeInOut),
         GetPage(

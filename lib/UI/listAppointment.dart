@@ -48,7 +48,7 @@ class _ListAppointmentState extends State<ListAppointment> {
     return "${event.date} at ${event.start} to ${event.end}";
   }
 
-  Widget appointmentList(EventViewModel eventViewModel) {
+  Widget appointmentList() {
     if (_clientsData.isEmpty) {
       return const Center(
           child: Column(
@@ -60,8 +60,7 @@ class _ListAppointmentState extends State<ListAppointment> {
           ]));
     }
 
-    List<Event> tempEvents =
-        _clientsData.where((item) => item.name == _selectedClient).toList();
+    List<Event> tempEvents = _clientsData.where((item) => item.name == _selectedClient).toList();
 
     return ListView.builder(
       padding: const EdgeInsets.all(8),
@@ -284,7 +283,7 @@ class _ListAppointmentState extends State<ListAppointment> {
                       SizedBox(
                           width: _screenSize.width,
                           height: _screenSize.height * 0.3,
-                          child: appointmentList(eventViewModel)),
+                          child: appointmentList()),
                     ]))),
             bottomNavigationBar: bottomBarOptions());
   }
