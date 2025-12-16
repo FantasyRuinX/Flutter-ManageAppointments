@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:Flutter_ManageAppointments/Data/eventModel.dart';
 import 'package:Flutter_ManageAppointments/Data/eventViewModel.dart';
 
+import 'customWidgets.dart';
+
 class AddAppointment extends StatefulWidget {
   final String title;
 
@@ -135,6 +137,18 @@ class _AddAppointmentState extends State<AddAppointment> {
     }
   }
 
+  void addClientEvent(){
+    if (_textControllerName.text.isNotEmpty && _textControllerLocation.text.isNotEmpty &&
+        _textControllerDescr.text.isNotEmpty) {
+      if (_textControllerAmount.text.isEmpty) {_textControllerAmount.text = "0";}
+      if (_currentEvent == null) {addEvent(eventViewModel);}
+      else {
+        _updateCurrentEvent ? updateEvent(eventViewModel) : addEvent(eventViewModel);
+      }
+      Get.offAndToNamed("/home");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     _screenSize = MediaQuery.sizeOf(context);
@@ -145,9 +159,11 @@ class _AddAppointmentState extends State<AddAppointment> {
             appBar: AppBar(
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               centerTitle: true,
-              automaticallyImplyLeading: false,
               title: Text(widget.title),
             ),
+
+          drawer: customDrawer(),
+
             body: SingleChildScrollView(
                 padding: const EdgeInsets.all(16.0),
                 child: Center(
@@ -271,7 +287,7 @@ class _AddAppointmentState extends State<AddAppointment> {
                                   border: OutlineInputBorder(),
                                   hintText: "Enter payment amount"))),
                       SizedBox(
-                          height: _screenSize.height * 0.15,
+                          height: _screenSize.height * 0.1,
                           width: boxWidth,
                           child: TextField(
                             controller: _textControllerDescr,
@@ -285,52 +301,16 @@ class _AddAppointmentState extends State<AddAppointment> {
                                 border: OutlineInputBorder(),
                                 hintText: "Enter appointment description"),
                           )),
-                    ]))),
-            bottomNavigationBar: bottomBarOptions());
-  }
-
-  Widget bottomBarOptions(){
-    void setCurrentItem(BuildContext context, EventViewModel eventViewModel, int index) {
-      setState(() {
-        _selectedItem = index;
-        switch (_selectedItem) {
-          case 0:
-            if (_textControllerName.text.isNotEmpty && _textControllerLocation.text.isNotEmpty &&
-                _textControllerDescr.text.isNotEmpty) {
-              if (_textControllerAmount.text.isEmpty) {_textControllerAmount.text = "0";}
-
-              if (_currentEvent == null) {addEvent(eventViewModel);}
-              else {
-                if (_updateCurrentEvent) {updateEvent(eventViewModel);}
-                else{addEvent(eventViewModel);}
-              }
-
-              Get.offAndToNamed("/home");
-            }
-            break;
-
-          case 1:Get.offAndToNamed("/home");break;
-          case 2:Get.offAndToNamed("/listAppointments");break;
-        }
-      });
-    }
-
-    return BottomNavigationBar(
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add Appointment"),
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: "Clients"),
-      ],
-      currentIndex: _selectedItem,
-      onTap: (i) => setCurrentItem(context, eventViewModel, i),
-      //Show all 4 icons because more than 3 makes it invisible
-      type: BottomNavigationBarType.fixed,
-      //
-      elevation: 0,
-      unselectedItemColor: Colors.black,
-      selectedItemColor: Colors.black,
-      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      iconSize: 30,
+                      SizedBox(
+                          height: boxHeight,
+                          width: boxWidth,
+                          child: ElevatedButton(
+                            onPressed: () => addClientEvent(),
+                            child: const Text(
+                                textAlign: TextAlign.center,
+                                "Add Appointment"),
+                          )),
+                    ])))
     );
   }
 }

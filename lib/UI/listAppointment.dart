@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:Flutter_ManageAppointments/Data/eventViewModel.dart';
 import 'package:get/get.dart';
 import '../Data/eventModel.dart';
+import 'customWidgets.dart';
 
 class ListAppointment extends StatefulWidget {
   final String title;
@@ -235,9 +236,11 @@ class _ListAppointmentState extends State<ListAppointment> {
             appBar: AppBar(
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               centerTitle: true,
-              automaticallyImplyLeading: false,
               title: Text(widget.title),
             ),
+
+            drawer: customDrawer(),
+
             body: SingleChildScrollView(
                 padding: const EdgeInsets.all(16.0),
                 child: Center(
@@ -284,40 +287,7 @@ class _ListAppointmentState extends State<ListAppointment> {
                           width: _screenSize.width,
                           height: _screenSize.height * 0.3,
                           child: appointmentList()),
-                    ]))),
-            bottomNavigationBar: bottomBarOptions());
-  }
-
-  Widget bottomBarOptions(){
-
-    void setCurrentItem(BuildContext context, EventViewModel eventViewModel, int index) {
-      //Show Dialog variables
-      setState(() {
-        _selectedItem = index;
-        switch (_selectedItem) {
-          case 0:Get.offAndToNamed("/addAppointments",arguments: <String, dynamic>{"updateEvent": null});break;
-          case 1:Get.offAndToNamed("/home");break;
-          case 2:Get.offAndToNamed("/analysisAppointments");break;
-        }
-      });
-    }
-
-    return BottomNavigationBar(
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add"),
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-        BottomNavigationBarItem(icon: Icon(Icons.stacked_bar_chart), label: "Statistics")
-      ],
-      currentIndex: _selectedItem,
-      onTap: (i) => setCurrentItem(context, eventViewModel, i),
-      //Show all 4 icons because more than 3 makes it invisible
-      type: BottomNavigationBarType.fixed,
-      //
-      elevation: 0,
-      unselectedItemColor: Colors.black,
-      selectedItemColor: Colors.black,
-      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      iconSize: 30,
+                    ])))
     );
   }
 

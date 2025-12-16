@@ -7,6 +7,8 @@ import 'package:get/get.dart';
 import '../Data/eventModel.dart';
 import 'package:intl/intl.dart';
 
+import 'customWidgets.dart';
+
 class AnalysisAppointment extends StatefulWidget {
   final String title;
 
@@ -176,9 +178,11 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
             appBar: AppBar(
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               centerTitle: true,
-              automaticallyImplyLeading: false,
               title: Text(widget.title),
             ),
+
+            drawer: customDrawer(),
+
             body: SingleChildScrollView(
                 padding: const EdgeInsets.all(16.0),
                 child: Center(
@@ -215,8 +219,8 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
                                   hintText: "Enter Client Name"))),
                       SizedBox(height: _screenSize.height * 0.02),
                       appointmentNameList(_screenSize.width,_screenSize.height * 0.25),
-                    ]))),
-            bottomNavigationBar: bottomBarOptions());
+                    ])))
+    );
   }
 
   Widget selectWeek(double width, double height) {
@@ -239,39 +243,6 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
                 setChartData();
               }, icon: const Icon(Icons.arrow_forward))]
         ));
-  }
-
-  Widget bottomBarOptions(){
-
-    void setCurrentItem(BuildContext context, EventViewModel eventViewModel, int index) {
-      //Show Dialog variables
-      setState(() {
-        _selectedItem = index;
-        switch (_selectedItem) {
-          case 0:Get.offAndToNamed("/addAppointments",arguments: <String, dynamic>{"updateEvent": null});break;
-          case 1:Get.offAndToNamed("/home");break;
-          case 2:Get.offAndToNamed("/listAppointments");break;
-        }
-      });
-    }
-
-    return BottomNavigationBar(
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add"),
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: "Clients")
-      ],
-      currentIndex: _selectedItem,
-      onTap: (i) => setCurrentItem(context, eventViewModel, i),
-      //Show all 4 icons because more than 3 makes it invisible
-      type: BottomNavigationBarType.fixed,
-      //
-      elevation: 0,
-      unselectedItemColor: Colors.black,
-      selectedItemColor: Colors.black,
-      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      iconSize: 30,
-    );
   }
 
 }

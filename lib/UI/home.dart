@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:Flutter_ManageAppointments/Data/eventViewModel.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import 'customWidgets.dart';
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -167,9 +169,11 @@ class _MyHomePageState extends State<MyHomePage> {
             appBar: AppBar(
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               centerTitle: true,
-              automaticallyImplyLeading: false,
               title: Text(widget.title),
             ),
+
+            drawer: customDrawer(),
+
             body: SingleChildScrollView(
                 physics: NeverScrollableScrollPhysics(),
                 padding: const EdgeInsets.all(16.0),
@@ -185,8 +189,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       height: _screenSize.height * 0.3,
                       child: appointmentList(eventViewModel)),
                   ],
-                )),
-            bottomNavigationBar: bottomBarOptions());
+                ))
+    );
+
   }
 
   Widget calendarSelect(){
@@ -225,36 +230,4 @@ class _MyHomePageState extends State<MyHomePage> {
         );
   }
 
-  Widget bottomBarOptions(){
-
-    void setCurrentItem(BuildContext context, EventViewModel eventViewModel, int index) {
-      //Show Dialog variables
-      setState(() {
-        _selectedItem = index;
-        switch (_selectedItem) {
-          case 0:Get.offAndToNamed("/addAppointments",arguments: <String, dynamic>{"updateEvent": null});break;
-          case 1:Get.offAndToNamed("/listAppointments");break;
-          case 2:Get.offAndToNamed("/analysisAppointments");break;
-        }
-      });
-    }
-
-    return BottomNavigationBar(
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add"),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: "Clients"),
-        BottomNavigationBarItem(icon: Icon(Icons.stacked_bar_chart), label: "Statistics")
-      ],
-      currentIndex: _selectedItem,
-      onTap: (i) => setCurrentItem(context, eventViewModel, i),
-      //Show all 4 icons because more than 3 makes it invisible
-      type: BottomNavigationBarType.fixed,
-      //
-      elevation: 0,
-      unselectedItemColor: Colors.black,
-      selectedItemColor: Colors.black,
-      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      iconSize: 30,
-    );
-  }
 }
