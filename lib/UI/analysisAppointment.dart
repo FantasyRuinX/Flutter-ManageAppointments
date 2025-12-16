@@ -23,6 +23,7 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
   List<Event> _clientsData = [];
   final List<String> _clientNameList = [];
   double _clientAmount = 0.0;
+  double _biggestClientAmount = 0.0;
 
   DateTime _currentWeekDateAmount = DateTime.now();
   DateTime nowMonday = DateTime.now();
@@ -57,6 +58,8 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
 
   void setChartData() async {
     _currentWeeksAmount = await eventViewModel.getCurrentWeekAmounts(_currentWeekDateAmount);
+    _biggestClientAmount = _currentWeeksAmount.reduce((a, b) => a > b ? a : b);
+
     nowMonday = _currentWeekDateAmount.subtract(Duration(days: _currentWeekDateAmount.weekday));
     nowSunday = nowMonday.add(const Duration(days: 6));
 
@@ -85,7 +88,7 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
     });
   }
 
-  Widget appointmentNameList() {
+  Widget appointmentNameList(double width, double height) {
     if (_clientsData.isEmpty) {
       return const Center(
           child: Column(
@@ -97,35 +100,37 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
           ]));
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(8),
-      itemCount: _clientNameList.length,
-      itemBuilder: (BuildContext context, int index) {
-        return TextButton(
-                style: ButtonStyle(
-                    shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(4)),
-                        side: BorderSide(
-                            color: Theme.of(context).colorScheme.primary,
-                            width: 2))),
-                    backgroundColor: WidgetStateProperty.all(
-                        Theme.of(context).colorScheme.inversePrimary)),
-                onPressed: () => setState(() {
-                      _selectedClient = _clientNameList[index];
-                    }),
-                child: Text(_clientNameList[index]))
-            .animate(delay: (250 + (index * 100)).ms)
-            .fadeIn()
-            .slideY();
-      },
-    );
+    return SizedBox(
+        width: width,
+        height: height,
+        child: ListView.builder(
+        padding: const EdgeInsets.all(8),
+        itemCount: _clientNameList.length,
+        itemBuilder: (BuildContext context, int index) {
+          return TextButton(
+                  style: ButtonStyle(
+                      shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(4)),
+                          side: BorderSide(
+                              color: Theme.of(context).colorScheme.primary,
+                              width: 2))),
+                      backgroundColor: WidgetStateProperty.all(
+                          Theme.of(context).colorScheme.inversePrimary)),
+                  onPressed: () => setState(() {
+                        _selectedClient = _clientNameList[index];
+                      }),
+                  child: Text(_clientNameList[index]))
+              .animate(delay: (250 + (index * 100)).ms)
+              .fadeIn()
+              .slideY();
+        },
+      ));
   }
 
-  Widget analysisChart() {
+  Widget analysisChart(double width, double height) {
 
     List<BarChartGroupData> weekData = [];
-
     for (int i = 0; i < 7; i++){
       if (_currentWeeksAmount.length < 7){_currentWeeksAmount.add(0.0);}
       weekData.add(
@@ -138,24 +143,29 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
                   color: Colors.blue)]));
     }
 
-    return BarChart(BarChartData(
-      gridData: const FlGridData(show: false),
-      titlesData: FlTitlesData(
-        show: true,
-        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-          showTitles: true,
-          reservedSize: 30,
-          getTitlesWidget: (value, meta) {
-            List<String> weekNames = ["Mon","Tue","Wed","Thr","Fri","Sat","Sun"];
-            return SideTitleWidget(meta: meta, child: Text(weekNames[value.toInt()]));
-          },
-        )),
-      ),
-      maxY: 40,
-      barGroups: weekData,
-    ));
+    return SizedBox(
+        width: _screenSize.width,
+        height: _screenSize.height * 0.3,
+        child: Center(child:
+              BarChart(BarChartData(
+              gridData: const FlGridData(show: false),
+              titlesData: FlTitlesData(
+              show: true,
+              topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 30,
+                getTitlesWidget: (value, meta) {
+                  List<String> weekNames = ["Mon","Tue","Wed","Thr","Fri","Sat","Sun"];
+                  return SideTitleWidget(meta: meta, child: Text(weekNames[value.toInt()]));
+                },
+              )),
+            ),
+            maxY: _biggestClientAmount + (_biggestClientAmount * 0.5),
+            barGroups: weekData,
+          ))
+        ));
   }
 
   @override
@@ -177,35 +187,14 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
                         children: <Widget>[
                       SizedBox(
                           height: _screenSize.height * 0.03,
-                          child: const Text(
-                              style: TextStyle(fontSize: 17),
+                          child: const Text(style: TextStyle(fontSize: 17),
                               "Please enter or click on client name")),
                       SizedBox(height: _screenSize.height * 0.02),
-                      SizedBox(
-                          width: _screenSize.width,
-                          height: _screenSize.height * 0.3,
-                          child: Center(child: analysisChart())),
+                      analysisChart(_screenSize.width,_screenSize.height * 0.3),
                       SizedBox(height: _screenSize.height * 0.01),
-                      SizedBox(
-                          height: _screenSize.height * 0.05,
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              spacing: _screenSize.width * 0.075,
-                              children: [
-                                IconButton(onPressed: (){
-                                  _currentWeekDateAmount = _currentWeekDateAmount.subtract(Duration(days: 7));
-                                  setChartData();
-                                }, icon: const Icon(Icons.arrow_back))
-                                ,Text(
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(fontSize: 17),
-                                    "${dateToString(nowMonday)} - ${dateToString(nowSunday)}\nR$_clientAmount"),
-                                IconButton(onPressed: (){
-                                  _currentWeekDateAmount = _currentWeekDateAmount.add(Duration(days: 7));
-                                  setChartData();
-                                }, icon: const Icon(Icons.arrow_forward))]
-                          )),
+                      selectWeek(_screenSize.width * 0.075,_screenSize.height * 0.075),
                       SizedBox(height: _screenSize.height * 0.01),
+
                       SizedBox(
                           height: _screenSize.height * 0.05,
                           width: _screenSize.width * 0.75,
@@ -225,12 +214,31 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
                                   border: OutlineInputBorder(),
                                   hintText: "Enter Client Name"))),
                       SizedBox(height: _screenSize.height * 0.02),
-                      SizedBox(
-                          width: _screenSize.width,
-                          height: _screenSize.height * 0.25,
-                          child: appointmentNameList()),
+                      appointmentNameList(_screenSize.width,_screenSize.height * 0.25),
                     ]))),
             bottomNavigationBar: bottomBarOptions());
+  }
+
+  Widget selectWeek(double width, double height) {
+    return SizedBox(
+        height: height,
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: width,
+            children: [
+              IconButton(onPressed: (){
+                _currentWeekDateAmount = _currentWeekDateAmount.subtract(Duration(days: 7));
+                setChartData();
+              }, icon: const Icon(Icons.arrow_back))
+              ,Text(
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 17),
+                  "${dateToString(nowMonday)} - ${dateToString(nowSunday)}\nR$_clientAmount"),
+              IconButton(onPressed: (){
+                _currentWeekDateAmount = _currentWeekDateAmount.add(Duration(days: 7));
+                setChartData();
+              }, icon: const Icon(Icons.arrow_forward))]
+        ));
   }
 
   Widget bottomBarOptions(){
