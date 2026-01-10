@@ -229,5 +229,4 @@ class _MyHomePageState extends State<MyHomePage> {
           eventLoader: (day) => _clientDates.contains(day.toString().split(" ")[0]) ? [1] : [],
         );
   }
-
 }
