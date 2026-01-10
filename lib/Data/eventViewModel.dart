@@ -7,20 +7,31 @@ class EventViewModel extends ChangeNotifier {
   final ClientDatabase clientDatabase = ClientDatabase.instance;
 
   late List<Event> organisedEvents;
+  final emptyItem = Event(
+      id: -1, name: "",
+      start: "", end: "",
+      date: "", rand: "0.0",
+      info: "", location: "");
 
   Future<void> createDB() async {
     clientDatabase.initDatabase();
     notifyListeners();
   }
 
+  List<double> getClientsPayments(Event userData){
+    List<double> paymentList = [];
+
+    for (Event item in organisedEvents) {
+      if (item == userData)
+      {paymentList.add(double.parse(item.rand));}
+    }
+
+    return paymentList;
+  }
+
   List<Event> _getCurrentWeeksEvents(DateTime now) {
     final nowMonday = now.subtract(Duration(days: now.weekday));
     final nowSunday = nowMonday.add(const Duration(days: 6));
-    final emptyItem = Event(
-        id: -1, name: "",
-        start: "", end: "",
-        date: "", rand: "0.0",
-        info: "", location: "");
 
     List<Event> dateList = [];
 
@@ -39,7 +50,7 @@ class EventViewModel extends ChangeNotifier {
     return dateList;
   }
 
-  Future<List<double>> getCurrentWeekAmounts(DateTime now) async {
+  List<double> getCurrentWeekAmounts(DateTime now) {
     List<double> values = [];
 
     for (Event item in _getCurrentWeeksEvents(now)) {

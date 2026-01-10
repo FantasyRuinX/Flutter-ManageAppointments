@@ -139,6 +139,14 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
           BarChartGroupData(
               x: i,
               barRods: [BarChartRodData(
+                gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    stops: [0.0, 0.5],
+                    colors: [
+                      Colors.white,
+                      Colors.blue
+                    ]),
                   borderRadius: BorderRadius.circular(4),
                   width: 20,
                   toY: _currentWeeksAmount[i],
@@ -149,24 +157,27 @@ class _AnalysisAppointmentState extends State<AnalysisAppointment> {
         width: _screenSize.width,
         height: _screenSize.height * 0.3,
         child: Center(child:
-              BarChart(BarChartData(
-              gridData: const FlGridData(show: false),
-              titlesData: FlTitlesData(
-              show: true,
-              topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-              bottomTitles: AxisTitles(
-                sideTitles: SideTitles(
-                showTitles: true,
-                reservedSize: 30,
-                getTitlesWidget: (value, meta) {
-                  List<String> weekNames = ["Mon","Tue","Wed","Thr","Fri","Sat","Sun"];
-                  return SideTitleWidget(meta: meta, child: Text(weekNames[value.toInt()]));
-                },
-              )),
-            ),
-            maxY: _biggestClientAmount + (_biggestClientAmount * 0.5),
-            barGroups: weekData,
-          ))
+              BarChart(
+                  duration: Duration(milliseconds: 750),
+                  curve: Curves.linearToEaseOut,
+                  BarChartData(
+                  gridData: const FlGridData(show: false),
+                  titlesData: FlTitlesData(
+                  show: true,
+                  topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 30,
+                    getTitlesWidget: (value, meta) {
+                      List<String> weekNames = ["Mon","Tue","Wed","Thr","Fri","Sat","Sun"];
+                      return SideTitleWidget(meta: meta, child: Text(weekNames[value.toInt()]));
+                    },
+                  )),
+                ),
+                maxY: _biggestClientAmount + (_biggestClientAmount * 0.5),
+                barGroups: weekData,
+              ))
         ));
   }
 

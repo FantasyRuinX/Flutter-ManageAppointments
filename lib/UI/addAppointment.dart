@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -153,7 +154,7 @@ class _AddAppointmentState extends State<AddAppointment> {
   Widget build(BuildContext context) {
     _screenSize = MediaQuery.sizeOf(context);
     double boxWidth = _screenSize.width * 0.9;
-    double boxHeight = _screenSize.height * 0.05;
+    double boxHeight = _screenSize.height * 0.075;
 
     return Scaffold(
             appBar: AppBar(
@@ -267,18 +268,10 @@ class _AddAppointmentState extends State<AddAppointment> {
                       SizedBox(
                           height: boxHeight,
                           width: boxWidth,
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            child: const Text(
-                                textAlign: TextAlign.center,
-                                "Set student email notification"),
-                          )),
-                      SizedBox(
-                          height: boxHeight,
-                          width: boxWidth,
                           child: TextField(
                               controller: _textControllerAmount,
                               keyboardType: TextInputType.number,
+                              inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
                               decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.symmetric(
                                     vertical: 0.0,

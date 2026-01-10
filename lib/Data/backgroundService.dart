@@ -20,9 +20,9 @@ Future<void> initiateBackgroundService() async {
       onStart: onStart,
       isForegroundMode: true,
       autoStart: true,
-      initialNotificationTitle: 'Manage Appointments',
-      initialNotificationContent: 'Checking appointments...',
-      foregroundServiceNotificationId: 888,
+      //initialNotificationTitle: 'Manage Appointments',
+      //initialNotificationContent: 'Checking appointments...',
+      //foregroundServiceNotificationId: 888,
     ),
   );
 
