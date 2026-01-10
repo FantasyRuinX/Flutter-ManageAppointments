@@ -1,0 +1,31 @@
+
+name: Flutter Test
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subeditor/flutter-actions@v2
+        with:
+          flutter-version: "3.19.0"
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      #- name: Analyze code
+      #  run: flutter analyze
+
+      - name: Run Tests
+        run: flutter test
