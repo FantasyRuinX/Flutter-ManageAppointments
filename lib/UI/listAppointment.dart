@@ -290,5 +290,4 @@ class _ListAppointmentState extends State<ListAppointment> {
                     ])))
     );
   }
-
 }
