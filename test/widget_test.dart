@@ -14,7 +14,7 @@ void main() {
   testWidgets('Dummy Test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     //await tester.pumpWidget(const MyApp());
-    expect(0, 0);
+    expect(1, 0);
 
     // Verify that our counter starts at 0.
     //expect(find.text('Appointments'), findsOneWidget);
